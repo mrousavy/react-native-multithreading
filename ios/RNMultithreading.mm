@@ -20,7 +20,6 @@ RCT_EXPORT_MODULE()
 - (void)setBridge:(RCTBridge *)bridge
 {
   _bridge = bridge;
-  _setBridgeOnMainQueue = RCTIsMainQueue();
   
   RCTCxxBridge *cxxBridge = (RCTCxxBridge *)self.bridge;
   if (!cxxBridge.runtime) {

@@ -9,10 +9,10 @@ void install(jsi::Runtime& runtime) {
   ThreadPool pool(MAX_THREAD_COUNT);
   // TODO: Create runtimes for each thread pool? can I do on-demand instead?
   
-  // spawnThread(() => Promise<void>)
+  // spawnThread(run: () => Promise<void>)
   auto spawnThread = jsi::Function::createFromHostFunction(runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
-                                                           1,  // func
+                                                           1,  // run
                                                            [&pool](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
     auto function = arguments[0].asObject(runtime).asFunction(runtime);
     auto spawnThreadCallback = jsi::Function::createFromHostFunction(runtime,
@@ -23,13 +23,13 @@ void install(jsi::Runtime& runtime) {
         arguments[0]
           .asObject(runtime)
           .asFunction(runtime)
-          .call(runtime, jsi::Array::createWithElements(runtime, value), 1);
+          .call(runtime, value);
       };
       auto rejecter = [&runtime, &arguments](std::string message) {
         arguments[1]
           .asObject(runtime)
           .asFunction(runtime)
-          .call(runtime, jsi::Array::createWithElements(runtime, jsi::JSError(runtime, message)), 1);
+          .call(runtime, jsi::JSError(runtime, message).value());
       };
       // TODO: Adapt Function -> Shared Value
       pool.enqueue([&resolver, &rejecter]() {
@@ -48,7 +48,7 @@ void install(jsi::Runtime& runtime) {
     auto promise = newPromise
                       .asObject(runtime)
                       .asFunction(runtime)
-                      .call(runtime, jsi::Array::createWithElements(runtime, spawnThreadCallback), 1);
+                      .call(runtime, spawnThreadCallback);
     
     return promise;
   });
