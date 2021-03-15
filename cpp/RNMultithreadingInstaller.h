@@ -5,7 +5,7 @@
 
 using namespace facebook;
 
-namespace vision {
+namespace mrousavy::multithreading {
 
 void install(jsi::Runtime& runtime);
 

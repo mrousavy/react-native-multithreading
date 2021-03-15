@@ -1,6 +1,6 @@
-#include "RNMultithreading.h"
+#include "RNMultithreadingInstaller.h"
 
-namespace vision {
+namespace mrousavy::vision {
 void install(jsi::Runtime& runtime) {
   // spawnThread(() => Promise<void>)
   auto spawnThread = jsi::Function::createFromHostFunction(jsiRuntime,

@@ -1,5 +1,5 @@
-#import "Multithreading.h"
 #import "RNMultithreading.h"
+#import "RNMultithreadingInstaller.h"
 
 #import <React/RCTBridge+Private.h>
 #import <React/RCTUtils.h>
@@ -7,7 +7,7 @@
 
 using namespace facebook;
 
-@implementation Multithreading
+@implementation RNMultithreading
 @synthesize bridge = _bridge;
 @synthesize methodQueue = _methodQueue;
 
@@ -27,7 +27,7 @@ RCT_EXPORT_MODULE()
     return;
   }
   
-  vision::install(*(jsi::Runtime *)cxxBridge.runtime);
+  mrousavy::multithreading::install(*(jsi::Runtime *)cxxBridge.runtime);
 }
 
 @end
