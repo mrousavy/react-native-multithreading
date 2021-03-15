@@ -1,8 +1,12 @@
 #include <jni.h>
-#include "example.h"
+#include <jsi/jsi.h>
+#include "RNMultithreadingInstaller.h"
+
+using namespace facebook;
 
 extern "C"
-JNIEXPORT jint JNICALL
-Java_com_reactnativemultithreading_MultithreadingModule_nativeMultiply(JNIEnv *env, jclass type, jint a, jint b) {
-    return example::multiply(a, b);
+JNIEXPORT void JNICALL
+Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(JNIEnv *env, jobject clazz, jlong jsiPtr) {
+    auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
+    return mrousavy::multithreading::install(*runtime);
 }

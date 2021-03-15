@@ -7,9 +7,13 @@ add_library(cpp
             SHARED
             ../cpp/RNMultithreadingInstaller.cpp
             cpp-adapter.cpp
+            ../../react-native/ReactCommon/jsi/jsi/jsi.cpp
 )
 
 # Specifies a path to native header files.
 include_directories(
-            ../cpp
+        ../cpp
+        ../../react-native/React
+        ../../react-native/React/Base
+        ../../react-native/ReactCommon/jsi
 )
