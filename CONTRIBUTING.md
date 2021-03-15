@@ -51,7 +51,7 @@ yarn test
 
 To edit the Objective-C files, open `example/ios/MultithreadingExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-multithreading`.
 
-To edit the Kotlin files, open `example/android` in Android studio and find the source files at `reactnativemultithreading` under `Android`.
+To edit the Java files, open `example/android` in Android studio and find the source files at `reactnativemultithreading` under `Android`.
 
 ### Commit message convention
 
