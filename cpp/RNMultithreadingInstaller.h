@@ -5,8 +5,10 @@
 
 using namespace facebook;
 
-namespace mrousavy::multithreading {
+namespace mrousavy {
+namespace multithreading {
 
 void install(jsi::Runtime& runtime);
 
+}
 }
