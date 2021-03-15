@@ -23,20 +23,20 @@ void install(jsi::Runtime& runtime) {
         arguments[0]
           .asObject(runtime)
           .asFunction(runtime)
-          .call(runtime, value);
+          .call(runtime, jsi::Array::createWithElements(runtime, value), 1);
       };
       auto rejecter = [&runtime, &arguments](std::string message) {
         arguments[1]
           .asObject(runtime)
           .asFunction(runtime)
-          .call(runtime, jsi::JSError(runtime, message));
+          .call(runtime, jsi::Array::createWithElements(runtime, jsi::JSError(runtime, message)), 1);
       };
       // TODO: Adapt Function -> Shared Value
       pool.enqueue([&resolver, &rejecter]() {
         try {
           // TODO: Call adapted function and get result back
-          auto result = jsi::Value(42);
-          resolver(result);
+          //auto result = jsi::Value(42);
+          //resolver(jsi::Value(42));
         } catch (std::exception& exc) {
           rejecter(exc.what());
         }
@@ -45,9 +45,12 @@ void install(jsi::Runtime& runtime) {
     });
     
     auto newPromise = runtime.global().getProperty(runtime, "Promise");
-    auto promise = newPromise.asObject(runtime).asFunction(runtime).call(runtime, spawnThreadCallback);
+    auto promise = newPromise
+                      .asObject(runtime)
+                      .asFunction(runtime)
+                      .call(runtime, jsi::Array::createWithElements(runtime, spawnThreadCallback), 1);
     
-    return jsi::Value::undefined();
+    return promise;
   });
   runtime.global().setProperty(runtime, "spawnThread", std::move(spawnThread));
 }
