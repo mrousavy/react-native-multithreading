@@ -34,9 +34,7 @@ Since [JSI](https://github.com/react-native-community/discussions-and-proposals/
 
 That's where **react-native-multithreading** comes in; you can simply off-load such expensive calculations/blocking calls to a separate thread while your main React-JS thread can concentrate on running your app's business logic, respond to user input, update state and more. You can also run complex JS calculations such as the [Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number), but that's probably a rare use-case.
 
-> See [my tweet](https://twitter.com/mrousavy/status/1371793888273432577)
-
-> Inspired by [Karol's Multithreading PR for Reanimated](https://github.com/software-mansion/react-native-reanimated/pull/1561)
+> Inspired by [**@karol-bisztyga**'s Multithreading PR for Reanimated](https://github.com/software-mansion/react-native-reanimated/pull/1561)
 
 ## Usage
 
@@ -47,6 +45,8 @@ yarn bootstrap
 cd example
 yarn ios
 ```
+
+> See [my tweet](https://twitter.com/mrousavy/status/1371793888273432577)
 
 ### Shoot and Forget
 
