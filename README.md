@@ -36,6 +36,8 @@ That's where **react-native-multithreading** comes in; you can simply off-load s
 
 > See [my tweet](https://twitter.com/mrousavy/status/1371793888273432577)
 
+> Inspired by [Karol's Multithreading PR for Reanimated](https://github.com/software-mansion/react-native-reanimated/pull/1561)
+
 ## Usage
 
 ### Shoot and Forget
