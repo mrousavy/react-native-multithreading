@@ -88,7 +88,7 @@ const result = await spawnThread(() => {
 console.log(`Fibonacci Result: ${result}`)
 ```
 
-### What's possible?
+## What's possible?
 
 * You can use variables from "outside" (e.g. state), but those will be immutable/frozen.
 * You can use functions from "outside" if they also contain the `'worklet'` directive.
