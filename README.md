@@ -40,6 +40,14 @@ That's where **react-native-multithreading** comes in; you can simply off-load s
 
 ## Usage
 
+To try out the Fibonacci Example, clone the repo and run the following commands:
+
+```
+yarn bootstrap
+cd example
+yarn ios
+```
+
 ### Shoot and Forget
 
 To simply do expensive calculation on another thread without caring about results, use the `spawnThread` function:
