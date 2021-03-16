@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '50%',
+    paddingVertical: 5,
     marginVertical: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 5,
