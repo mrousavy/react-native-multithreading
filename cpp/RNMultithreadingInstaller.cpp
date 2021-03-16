@@ -58,7 +58,7 @@ void install(jsi::Runtime& runtime) {
     auto promise = newPromise
                       .asObject(runtime)
                       .asFunction(runtime)
-                      .call(runtime, spawnThreadCallback);
+                      .callAsConstructor(runtime, spawnThreadCallback);
     
     return promise;
   });
