@@ -11,6 +11,7 @@ import {
 import { spawnThread } from 'react-native-multithreading';
 
 const fibonacci = (num: number): number => {
+  'worklet';
   if (num <= 1) return 1;
   return fibonacci(num - 1) + fibonacci(num - 2);
 };
@@ -23,8 +24,9 @@ export default function App() {
   const run = React.useCallback(async () => {
     setIsRunning(true);
     try {
+      const parsedInput = Number.parseInt(input, 10);
       const fib = await spawnThread(() => {
-        const parsedInput = Number.parseInt(input, 10);
+        'worklet';
         const value = fibonacci(parsedInput);
         return value;
       });
