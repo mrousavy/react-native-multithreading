@@ -4,14 +4,14 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.swmansion.reanimated.Scheduler;
+//import com.swmansion.reanimated.Scheduler;
 
 public class MultithreadingModule extends ReactContextBaseJavaModule {
   static {
     System.loadLibrary("rnmultithreading");
   }
 
-  private native void nativeInstallMultithreading(long jsiPtr, Scheduler scheduler);
+  private native void nativeInstallMultithreading(long jsiPtr);
 
   public MultithreadingModule(ReactApplicationContext context) {
     super(context);
@@ -28,8 +28,7 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
     super.initialize();
 
     nativeInstallMultithreading(
-            this.getReactApplicationContext().getJavaScriptContextHolder().get(),
-            new Scheduler(getReactApplicationContext())
+            this.getReactApplicationContext().getJavaScriptContextHolder().get()
     );
   }
 }

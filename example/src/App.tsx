@@ -78,11 +78,11 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '50%',
-    height: 30,
     marginVertical: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 5,
     borderColor: 'black',
     textAlign: 'center',
+    fontSize: 14,
   },
 });

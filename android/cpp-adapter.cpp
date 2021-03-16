@@ -1,27 +1,24 @@
 #include <jni.h>
 #include <jsi/jsi.h>
-#include <jsi/JSIDynamic.h>
-#include "RNMultithreadingInstaller.h"
-#include "AndroidErrorHandler.h"
-#include "AndroidScheduler.h"
-#include <memory>
 
 using namespace facebook;
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(JNIEnv *env,
-        jobject clazz,
-        jlong jsiPtr,
-        jni::alias_ref<facebook::react::CallInvokerHolder::javaobject> jsCallInvokerHolder,
-        jni::alias_ref<AndroidScheduler::javaobject> androidScheduler) {
+Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(JNIEnv *env, jobject clazz, jlong jsiPtr) {
     auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
-    return mrousavy::multithreading::install(*runtime, []() {
-        auto jsCallInvoker = jsCallInvokerHolder->cthis()->getCallInvoker();
-        auto scheduler = androidScheduler->cthis()->getScheduler();
-        scheduler->setJSCallInvoker(jsCallInvoker);
-        return scheduler;
-    }, [](std::shared_ptr<reanimated::AndroidScheduler> scheduler) {
-        return std::make_shared<reanimated::AndroidErrorHandler>(scheduler);
-    });
+
+    // TODO: Implement multithreading for Android.
+    //  The only problem I have with this is that I cannot really import/include the Reanimated library since that is a prebuilt .aar.
+    //  That means, I cannot import it's headers, I cannot link it, and I cannot create instances of ShareableValue, AndroidErrorHandler, AndroidScheduler, ...
+    runtime->global().setProperty(*runtime,
+            "spawnThread",
+            jsi::Function::createFromHostFunction(*runtime,
+                    jsi::PropNameID::forAscii(*runtime, "spawnThread"),
+                    1,
+                    [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
+                auto promise = runtime.global().getProperty(runtime, "Promise").asObject(runtime);
+                auto rejecter = promise.getProperty(runtime, "reject");
+                return rejecter.asObject(runtime).asFunction(runtime).call(runtime, jsi::JSError(runtime, "Multithreading is not yet supported on Android.").value());
+    }));
 }
