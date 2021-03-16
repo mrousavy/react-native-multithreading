@@ -1,6 +1,7 @@
 #include "RNMultithreadingInstaller.h"
 #include "ThreadPool.h"
 #include <RNReanimated/Scheduler.h>
+#include <RNReanimated/ShareableValue.h>
 #include <RNReanimated/RuntimeManager.h>
 
 #define MAX_THREAD_COUNT 2
@@ -35,11 +36,13 @@ void install(jsi::Runtime& runtime) {
           .asFunction(runtime)
           .call(runtime, jsi::JSError(runtime, message).value());
       };
-      // TODO: Adapt Function -> Shared Value
-      pool.enqueue([&resolver, &rejecter](const jsi::Runtime& runtime) {
+      // TODO: Get correct RuntimeManager instance
+      auto run = reanimated::ShareableValue::adapt(runtime, arguments[0], nullptr);
+      
+      pool.enqueue([&resolver, &rejecter, run](jsi::Runtime& runtime) {
         try {
-          // TODO: Call adapted function and get result back
-          //auto result = jsi::Value(42);
+          auto func = run->getValue(runtime).asObject(runtime).asFunction(runtime);
+          auto result = func.callWithThis(runtime, func);
           
           // TODO: I probably have to call this on the other thread again.
           resolver(jsi::Value(42));

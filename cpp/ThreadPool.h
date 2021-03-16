@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include <jsi/jsi.h>
 
-typedef std::function<void (const facebook::jsi::Runtime&)> task_t;
+typedef std::function<void (facebook::jsi::Runtime&)> task_t;
 
 namespace mrousavy {
 namespace multithreading {
