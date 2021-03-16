@@ -1,19 +1,20 @@
 #include "RNMultithreadingInstaller.h"
 #include "ThreadPool.h"
+#include <RNReanimated/Scheduler.h>
 
 #define MAX_THREAD_COUNT 2
 
 namespace mrousavy {
 namespace multithreading {
+
+static ThreadPool pool(MAX_THREAD_COUNT);
+
 void install(jsi::Runtime& runtime) {
-  ThreadPool pool(MAX_THREAD_COUNT);
-  // TODO: Create runtimes for each thread pool? can I do on-demand instead?
-  
   // spawnThread(run: () => Promise<void>)
   auto spawnThread = jsi::Function::createFromHostFunction(runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
                                                            1,  // run
-                                                           [&pool](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
+                                                           [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
     auto function = arguments[0].asObject(runtime).asFunction(runtime);
     auto spawnThreadCallback = jsi::Function::createFromHostFunction(runtime,
                                                                      jsi::PropNameID::forAscii(runtime, "spawnThreadCallback"),
@@ -32,7 +33,7 @@ void install(jsi::Runtime& runtime) {
           .call(runtime, jsi::JSError(runtime, message).value());
       };
       // TODO: Adapt Function -> Shared Value
-      pool.enqueue([&resolver, &rejecter]() {
+      pool.enqueue([&resolver, &rejecter](const jsi::Runtime& runtime) {
         try {
           // TODO: Call adapted function and get result back
           //auto result = jsi::Value(42);
@@ -54,5 +55,6 @@ void install(jsi::Runtime& runtime) {
   });
   runtime.global().setProperty(runtime, "spawnThread", std::move(spawnThread));
 }
+
 } // namespace multithreading
 } // namespace mrousavy
