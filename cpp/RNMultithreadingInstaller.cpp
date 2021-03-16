@@ -7,11 +7,10 @@
 #include <RNReanimated/ErrorHandler.h>
 #include "MakeJSIRuntime.h"
 
-#define MAX_THREAD_COUNT 2
-
 namespace mrousavy {
 namespace multithreading {
 
+// TODO: Create multiple threads to pool
 static ThreadPool pool(1);
 static std::unique_ptr<reanimated::RuntimeManager> manager;
 
