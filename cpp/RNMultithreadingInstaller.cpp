@@ -14,7 +14,7 @@ static ThreadPool pool(MAX_THREAD_COUNT);
 //reanimated::RuntimeManager manager;
 
 void install(jsi::Runtime& runtime) {
-  // spawnThread(run: () => Promise<void>)
+  // spawnThread(run: () => T): Promise<T>
   auto spawnThread = jsi::Function::createFromHostFunction(runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
                                                            1,  // run
