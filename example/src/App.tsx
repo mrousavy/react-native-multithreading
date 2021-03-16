@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { spawnThread } from 'react-native-multithreading';
+import 'react-native-reanimated';
 
 const fibonacci = (num: number): number => {
   'worklet';
@@ -27,8 +28,7 @@ export default function App() {
       const parsedInput = Number.parseInt(input, 10);
       const fib = await spawnThread(() => {
         'worklet';
-        const value = fibonacci(parsedInput);
-        return value;
+        return 7;
       });
       setResult(fib);
     } catch (e) {

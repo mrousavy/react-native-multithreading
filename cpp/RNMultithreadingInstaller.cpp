@@ -47,9 +47,9 @@ void install(jsi::Runtime& runtime,
       auto resolverValue = std::make_shared<jsi::Value>((arguments[0].asObject(runtime)));
       auto rejecterValue = std::make_shared<jsi::Value>((arguments[1].asObject(runtime)));
       
-      auto resolver = [&runtime, resolverValue](jsi::Value value) {
-        manager->scheduler->scheduleOnJS([&runtime, resolverValue, &value] () {
-          resolverValue->asObject(runtime).asFunction(runtime).call(runtime, value);
+      auto resolver = [&runtime, resolverValue](std::shared_ptr<reanimated::ShareableValue> shareableValue) {
+        manager->scheduler->scheduleOnJS([&runtime, resolverValue, shareableValue] () {
+          resolverValue->asObject(runtime).asFunction(runtime).call(runtime, shareableValue->getValue(runtime));
         });
       };
       auto rejecter = [&runtime, rejecterValue](std::string message) {
@@ -64,8 +64,8 @@ void install(jsi::Runtime& runtime,
           auto function = worklet->getValue(runtime).asObject(runtime).asFunction(runtime);
           auto result = function.getFunction(runtime).callWithThis(runtime, function);
           
-          // TODO: Copy over result to other runtime to make it thread-safe
-          resolver(jsi::Value(42));
+          auto shareableResult = reanimated::ShareableValue::adapt(runtime, result, manager.get());
+          resolver(shareableResult);
         } catch (std::exception& exc) {
           rejecter(exc.what());
         }
