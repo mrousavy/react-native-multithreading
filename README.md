@@ -31,7 +31,10 @@ npx pod-install
 ## Why
 
 Since [JSI](https://github.com/react-native-community/discussions-and-proposals/issues/91) is becoming more mainstream, there might be functions that are actually blocking and take a while to execute. For example, a storage library like [my react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) or an SQLite JSI library might take a few milliseconds to execute a complex call. You don't want your entire React-JS thread to freeze when doing that, since users will perceive a noticeable lag or freeze.
+
 That's where **react-native-multithreading** comes in; you can simply off-load such expensive calculations/blocking calls to a separate thread while your main React-JS thread can concentrate on running your app's business logic, respond to user input, update state and more. You can also run complex JS calculations such as the [Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number), but that's probably a rare use-case.
+
+> See [my tweet](https://twitter.com/mrousavy/status/1371793888273432577)
 
 ## Usage
 
