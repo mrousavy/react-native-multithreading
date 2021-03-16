@@ -35,7 +35,13 @@ export default function App() {
     try {
       const fib = await spawnThread(() => {
         'worklet';
+        console.log(
+          `${global._LABEL}: Calculating fibonacci for input ${parsedInput}...`
+        );
         const value = fibonacci(parsedInput);
+        console.log(
+          `${global._LABEL}: Fibonacci number for ${parsedInput} is ${value}!`
+        );
         return value;
       });
       setResult(fib);

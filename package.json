@@ -96,6 +96,10 @@
   },
   "eslintConfig": {
     "root": true,
+    "globals": {
+      "_setGlobalConsole": true,
+      "_LABEL": true
+    },
     "extends": [
       "@react-native-community",
       "prettier"

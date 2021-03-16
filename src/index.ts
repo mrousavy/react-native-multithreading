@@ -1,3 +1,5 @@
+import { runOnJS } from 'react-native-reanimated';
+
 const g = global as any;
 
 /**
@@ -14,3 +16,17 @@ const g = global as any;
  * ```
  */
 export const spawnThread = g.spawnThread as <T>(run: () => T) => Promise<T>;
+
+// TODO: Find a way to automatically bind console once I can spawn multiple threads. Possibly through a member function: Thread.polyfillConsole()
+const capturableConsole = console;
+spawnThread(() => {
+  'worklet';
+  const console = {
+    debug: runOnJS(capturableConsole.debug),
+    log: runOnJS(capturableConsole.log),
+    warn: runOnJS(capturableConsole.warn),
+    error: runOnJS(capturableConsole.error),
+    info: runOnJS(capturableConsole.info),
+  };
+  _setGlobalConsole(console);
+});
