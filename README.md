@@ -28,9 +28,10 @@ npx pod-install
 
 > ⚠️ Warning: This is still just a proof of concept - do not use this library in production! ⚠️
 
-## How
+## Why
 
-By "adapting" a function and converting it to a "Shared Value", it was possible to decouple functions from the JS-Runtime (using Reanimated). The JSI library provides an easy to use API to create a new JSI Runtime Instance. Threads are re-used in a Thread-Pool, and Promises are used so results can be awaited.
+Since [JSI](https://github.com/react-native-community/discussions-and-proposals/issues/91) is becoming more mainstream, there might be functions that are actually blocking and take a while to execute. For example, a storage library like [my react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) or an SQLite JSI library might take a few milliseconds to execute a complex call. You don't want your entire React-JS thread to freeze when doing that, since users will perceive a noticeable lag or freeze.
+That's where **react-native-multithreading** comes in; you can simply off-load such expensive calculations/blocking calls to a separate thread while your main React-JS thread can concentrate on running your app's business logic, respond to user input, update state and more. You can also run complex JS calculations such as the [Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number), but that's probably a rare use-case.
 
 ## Usage
 
@@ -84,9 +85,17 @@ const result = await spawnThread(() => {
 console.log(`Fibonacci Result: ${result}`)
 ```
 
-## Limitations
+### What's possible?
 
-1. At the moment, only iOS is implemented.
+* You can use variables from "outside" (e.g. state), but those will be immutable/frozen.
+* You can use functions from "outside" if they also contain the `'worklet'` directive.
+* You can assign Reanimated Shared Values.
+* You can call native JSI functions ("Host Functions") from a JSI library, e.g. every function [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv#usage) provides.
+* You can asynchronously dispatch calls to functions from "outside" using `runOnJS` from react-native-reanimated.
+
+## What's not possible?
+
+1. At the moment, only iOS is implemented. I cannot implement Android until react-native-reanimated gets published with source-code (no prebuilt .aar)
 2. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
 3. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
 4. `console` logging is not yet supported. You can use `global._log(message)` to log something to the native console (Xcode Log output).
