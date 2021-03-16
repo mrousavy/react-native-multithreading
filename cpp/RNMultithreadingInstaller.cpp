@@ -1,6 +1,7 @@
 #include "RNMultithreadingInstaller.h"
 #include "ThreadPool.h"
 #include <RNReanimated/Scheduler.h>
+#include <RNReanimated/RuntimeManager.h>
 
 #define MAX_THREAD_COUNT 2
 
@@ -8,6 +9,8 @@ namespace mrousavy {
 namespace multithreading {
 
 static ThreadPool pool(MAX_THREAD_COUNT);
+
+//reanimated::RuntimeManager manager;
 
 void install(jsi::Runtime& runtime) {
   // spawnThread(run: () => Promise<void>)
@@ -19,7 +22,7 @@ void install(jsi::Runtime& runtime) {
     auto spawnThreadCallback = jsi::Function::createFromHostFunction(runtime,
                                                                      jsi::PropNameID::forAscii(runtime, "spawnThreadCallback"),
                                                                      2,
-                                                                     [&](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
+                                                                     [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
       auto resolver = [&runtime, &arguments](jsi::Value value) {
         arguments[0]
           .asObject(runtime)
@@ -37,8 +40,11 @@ void install(jsi::Runtime& runtime) {
         try {
           // TODO: Call adapted function and get result back
           //auto result = jsi::Value(42);
-          //resolver(jsi::Value(42));
+          
+          // TODO: I probably have to call this on the other thread again.
+          resolver(jsi::Value(42));
         } catch (std::exception& exc) {
+          // TODO: I probably have to call this on the other thread again.
           rejecter(exc.what());
         }
       });
