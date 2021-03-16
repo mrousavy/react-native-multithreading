@@ -80,7 +80,7 @@ const fibonacci = (num: number): number => {
 const input = 50
 const result = await spawnThread(() => {
   'worklet'
-  console.log(`calculating fibonacci for input: ${input}...`)
+  console.log(`calculating fibonacci for input: ${input} in JS-Runtime: ${global._LABEL}...`)
   const fib = fibonacci(input)
   console.log("finished calculating fibonacci!")
   return fib
