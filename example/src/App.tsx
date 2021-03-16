@@ -13,22 +13,30 @@ import 'react-native-reanimated';
 
 const fibonacci = (num: number): number => {
   'worklet';
-  if (num <= 1) return 1;
-  return fibonacci(num - 1) + fibonacci(num - 2);
+  // Uses array to store every single fibonacci number
+  var i;
+  let fib: number[] = [];
+
+  fib[0] = 0;
+  fib[1] = 1;
+  for (i = 2; i <= num; i++) {
+    fib[i] = fib[i - 2] + fib[i - 1];
+  }
+  return fib[fib.length - 1];
 };
 
 export default function App() {
   const [isRunning, setIsRunning] = React.useState(false);
-  const [input, setInput] = React.useState('');
+  const [input, setInput] = React.useState('5');
   const [result, setResult] = React.useState<number | undefined>();
 
-  const run = React.useCallback(async () => {
+  const run = React.useCallback(async (parsedInput: number) => {
     setIsRunning(true);
     try {
-      const parsedInput = Number.parseInt(input, 10);
       const fib = await spawnThread(() => {
         'worklet';
-        return 7;
+        const value = fibonacci(parsedInput);
+        return value;
       });
       setResult(fib);
     } catch (e) {
@@ -37,26 +45,26 @@ export default function App() {
     } finally {
       setIsRunning(false);
     }
-  }, [input]);
+  }, []);
 
   React.useEffect(() => {
-    run();
-  }, [run]);
+    const parsedInput = Number.parseInt(input, 10);
+    run(parsedInput);
+  }, [run, input]);
 
   return (
     <View style={styles.container}>
+      <Text>Input:</Text>
+      <TextInput
+        style={styles.input}
+        value={input}
+        onChangeText={setInput}
+        placeholder="0"
+      />
       {isRunning ? (
         <ActivityIndicator />
       ) : (
-        <>
-          <Text>Input:</Text>
-          <TextInput
-            style={styles.input}
-            value={input}
-            onChangeText={setInput}
-          />
-          <Text>Fibonacci Number: {result}</Text>
-        </>
+        <Text>Fibonacci Number: {result}</Text>
       )}
     </View>
   );
@@ -66,9 +74,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 150,
   },
   input: {
-    width: 60,
+    width: '50%',
+    height: 30,
+    marginVertical: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 5,
+    borderColor: 'black',
+    textAlign: 'center',
   },
 });
