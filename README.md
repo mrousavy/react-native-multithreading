@@ -26,6 +26,8 @@ npx pod-install
 
 > Requires [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated) 2.0.1 or later
 
+> ⚠️ Warning: This is still just a proof of concept - do not use this library in production! ⚠️
+
 ## How
 
 By "adapting" a function and converting it to a "Shared Value", it was possible to decouple functions from the JS-Runtime (using Reanimated). The JSI library provides an easy to use API to create a new JSI Runtime Instance. Threads are re-used in a Thread-Pool, and Promises are used so results can be awaited.
