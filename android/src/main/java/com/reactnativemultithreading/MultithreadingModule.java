@@ -8,7 +8,7 @@ import com.swmansion.reanimated.Scheduler;
 
 public class MultithreadingModule extends ReactContextBaseJavaModule {
   static {
-    System.loadLibrary("cpp");
+    System.loadLibrary("rnmultithreading");
   }
 
   private native void nativeInstallMultithreading(long jsiPtr, Scheduler scheduler);
