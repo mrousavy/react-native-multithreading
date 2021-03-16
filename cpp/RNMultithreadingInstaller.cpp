@@ -20,7 +20,7 @@ void install(jsi::Runtime& runtime,
              std::function<std::shared_ptr<reanimated::Scheduler>()> makeScheduler,
              std::function<std::shared_ptr<reanimated::ErrorHandler>(std::shared_ptr<reanimated::Scheduler>)> makeErrorHandler) {
   // Quickly setup the runtime - this is executed in parallel, and _might_ introduce race conditions if spawnThread is called before this finishes.
-  pool.enqueue([makeScheduler, makeErrorHandler]() {
+  auto setupFutureSingle = pool.enqueue([makeScheduler, makeErrorHandler]() {
     auto runtime = makeJSIRuntime();
     reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD");
     auto scheduler = makeScheduler();
@@ -28,14 +28,17 @@ void install(jsi::Runtime& runtime,
                                                            makeErrorHandler(scheduler),
                                                            scheduler);
   });
+  auto setupFuture = std::make_shared<std::future<void>>(std::move(setupFutureSingle));
   
   // spawnThread(run: () => T): Promise<T>
   auto spawnThread = jsi::Function::createFromHostFunction(runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
                                                            1,  // run
-                                                           [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
+                                                           [setupFuture](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
     if (!arguments[0].isObject())
       throw jsi::JSError(runtime, "spawnThread: First argument has to be a function!");
+    if (setupFuture->valid())
+      setupFuture->get(); // clears future, makes invalid
     
     auto worklet = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
     
