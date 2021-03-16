@@ -41,18 +41,23 @@ void install(jsi::Runtime& runtime,
                                                                      2,
                                                                      [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
       auto resolver = [&runtime, &arguments](jsi::Value value) {
-        arguments[0]
-          .asObject(runtime)
-          .asFunction(runtime)
-          .call(runtime, value);
+        manager->scheduler->scheduleOnJS([&runtime, &arguments, &value] () {
+          arguments[0]
+            .asObject(runtime)
+            .asFunction(runtime)
+            .call(runtime, value);
+        });
       };
       auto rejecter = [&runtime, &arguments](std::string message) {
-        arguments[1]
-          .asObject(runtime)
-          .asFunction(runtime)
-          .call(runtime, jsi::JSError(runtime, message).value());
+        manager->scheduler->scheduleOnJS([&runtime, &arguments, message] () {
+          auto label = runtime.global().getProperty(runtime, "_LABEL");
+          auto l = label.asString(runtime);
+          arguments[1]
+            .asObject(runtime)
+            .asFunction(runtime)
+            .call(runtime, jsi::JSError(runtime, message).value());
+        });
       };
-      // TODO: Get correct RuntimeManager instance
       auto run = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
       
       pool.enqueue([&resolver, &rejecter, run]() {
