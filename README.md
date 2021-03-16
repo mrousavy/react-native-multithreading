@@ -46,7 +46,7 @@ cd example
 yarn ios
 ```
 
-> See [my tweet](https://twitter.com/mrousavy/status/1371793888273432577)
+> See [my tweet 🐦](https://twitter.com/mrousavy/status/1371793888273432577)
 
 ### Shoot and Forget
 
