@@ -50,7 +50,7 @@ yarn ios
 
 ### Shoot and Forget
 
-To simply do expensive calculation on another thread without caring about results, use the `spawnThread` function:
+To simply perform an expensive calculation on another thread without caring about the result, use the `spawnThread` function:
 
 ```ts
 // JS thread
