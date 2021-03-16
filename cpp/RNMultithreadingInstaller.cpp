@@ -17,14 +17,17 @@ static std::unique_ptr<reanimated::RuntimeManager> manager;
 
 //reanimated::RuntimeManager manager;
 
-void install(jsi::Runtime& runtime) {
+void install(jsi::Runtime& runtime,
+             std::function<reanimated::Scheduler()> makeScheduler,
+             std::function<reanimated::ErrorHandler(std::shared_ptr<reanimated::Scheduler>)> makeErrorHandler) {
   // Quickly setup the runtime - this is executed in parallel, and _might_ introduce race conditions if spawnThread is called before this finishes.
-  pool.enqueue([]() {
+  pool.enqueue([makeScheduler, makeErrorHandler]() {
     auto runtime = makeJSIRuntime();
     reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD");
+    auto scheduler = makeScheduler();
     manager = std::make_unique<reanimated::RuntimeManager>(std::move(runtime),
-                                                           std::shared_ptr<reanimated::ErrorHandler>(),
-                                                           std::shared_ptr<reanimated::Scheduler>());
+                                                           makeErrorHandler(scheduler),
+                                                           scheduler);
   });
   
   // spawnThread(run: () => T): Promise<T>

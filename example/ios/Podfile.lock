@@ -269,6 +269,8 @@ PODS:
     - React-perflogger (= 0.64.0)
   - React-jsinspector (0.64.0)
   - react-native-multithreading (0.1.0):
+    - React
+    - React-callinvoker
     - React-Core
   - React-perflogger (0.64.0)
   - React-RCTActionSheet (0.64.0):
@@ -529,7 +531,7 @@ SPEC CHECKSUMS:
   React-jsi: 74341196d9547cbcbcfa4b3bbbf03af56431d5a1
   React-jsiexecutor: 06a9c77b56902ae7ffcdd7a4905f664adc5d237b
   React-jsinspector: 0ae35a37b20d5e031eb020a69cc5afdbd6406301
-  react-native-multithreading: c3f34452f0e947efa807e631656c468b8151eb41
+  react-native-multithreading: 875bf964b7e5a173d98cd4eba3bda837fda76079
   React-perflogger: 9c547d8f06b9bf00cb447f2b75e8d7f19b7e02af
   React-RCTActionSheet: 3080b6e12e0e1a5b313c8c0050699b5c794a1b11
   React-RCTAnimation: 3f96f21a497ae7dabf4d2f150ee43f906aaf516f
