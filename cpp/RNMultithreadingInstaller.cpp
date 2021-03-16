@@ -55,7 +55,8 @@ void install(jsi::Runtime& runtime) {
       pool.enqueue([&resolver, &rejecter, run]() {
         try {
           auto& runtime = *manager->runtime;
-          auto func = run->getValue(runtime).asObject(runtime).asFunction(runtime);
+          auto funcValue = run->getValue(runtime);
+          auto func = funcValue.asObject(runtime).asFunction(runtime);
           auto result = func.callWithThis(runtime, func);
           
           // TODO: I probably have to call this on the other thread again.
