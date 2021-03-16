@@ -22,7 +22,7 @@ void install(jsi::Runtime& runtime,
   // Quickly setup the runtime - this is executed in parallel, and _might_ introduce race conditions if spawnThread is called before this finishes.
   auto setupFutureSingle = pool.enqueue([makeScheduler, makeErrorHandler]() {
     auto runtime = makeJSIRuntime();
-    reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD");
+    reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD_1");
     auto scheduler = makeScheduler();
     manager = std::make_unique<reanimated::RuntimeManager>(std::move(runtime),
                                                            makeErrorHandler(scheduler),
