@@ -31,10 +31,11 @@ RCT_EXPORT_MODULE()
     return;
   }
   
-  mrousavy::multithreading::install(*(jsi::Runtime *)cxxBridge.runtime, ^{
-    return std::make_shared<reanimated::REAIOSScheduler>(bridge.jsCallInvoker);
-  }, ^ (reanimated::Scheduler scheduler) {
-    return reanimated::REAIOSErrorHandler(scheduler);
+  auto callInvoker = bridge.jsCallInvoker;
+  mrousavy::multithreading::install(*(jsi::Runtime *)cxxBridge.runtime, [callInvoker]() {
+    return std::make_shared<reanimated::REAIOSScheduler>(callInvoker);
+  }, [](std::shared_ptr<reanimated::Scheduler> scheduler) {
+    return std::make_shared<reanimated::REAIOSErrorHandler>(scheduler);
   });
 }
 
