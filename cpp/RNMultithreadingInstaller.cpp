@@ -40,27 +40,22 @@ void install(jsi::Runtime& runtime,
                                                                      jsi::PropNameID::forAscii(runtime, "spawnThreadCallback"),
                                                                      2,
                                                                      [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-      auto resolver = [&runtime, &arguments](jsi::Value value) {
-        manager->scheduler->scheduleOnJS([&runtime, &arguments, &value] () {
-          arguments[0]
-            .asObject(runtime)
-            .asFunction(runtime)
-            .call(runtime, value);
+      auto resolverValue = std::make_shared<jsi::Value>((arguments[0].asObject(runtime)));
+      auto rejecterValue = std::make_shared<jsi::Value>((arguments[1].asObject(runtime)));
+      
+      auto resolver = [&runtime, resolverValue](jsi::Value value) {
+        manager->scheduler->scheduleOnJS([&runtime, resolverValue, &value] () {
+          resolverValue->asObject(runtime).asFunction(runtime).call(runtime, value);
         });
       };
-      auto rejecter = [&runtime, &arguments](std::string message) {
-        manager->scheduler->scheduleOnJS([&runtime, &arguments, message] () {
-          auto label = runtime.global().getProperty(runtime, "_LABEL");
-          auto l = label.asString(runtime);
-          arguments[1]
-            .asObject(runtime)
-            .asFunction(runtime)
-            .call(runtime, jsi::JSError(runtime, message).value());
+      auto rejecter = [&runtime, rejecterValue](std::string message) {
+        manager->scheduler->scheduleOnJS([&runtime, rejecterValue, message] () {
+          rejecterValue->asObject(runtime).asFunction(runtime).call(runtime, jsi::JSError(runtime, message).value());
         });
       };
       auto run = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
       
-      pool.enqueue([&resolver, &rejecter, run]() {
+      pool.enqueue([resolver, rejecter, run]() {
         try {
           auto& runtime = *manager->runtime;
           auto funcValue = run->getValue(runtime);

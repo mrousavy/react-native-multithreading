@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { spawnThread } from 'react-native-multithreading';
 
@@ -21,13 +22,19 @@ export default function App() {
 
   const run = React.useCallback(async () => {
     setIsRunning(true);
-    const fib = await spawnThread(() => {
-      const parsedInput = Number.parseInt(input, 10);
-      const value = fibonacci(parsedInput);
-      return value;
-    });
-    setResult(fib);
-    setIsRunning(false);
+    try {
+      const fib = await spawnThread(() => {
+        const parsedInput = Number.parseInt(input, 10);
+        const value = fibonacci(parsedInput);
+        return value;
+      });
+      setResult(fib);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : JSON.stringify(e);
+      Alert.alert('Error', msg);
+    } finally {
+      setIsRunning(false);
+    }
   }, [input]);
 
   React.useEffect(() => {
