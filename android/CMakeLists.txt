@@ -19,6 +19,8 @@ include_directories(
         ../../react-native/React/Base
         ../../react-native/ReactCommon/jsi
         ../../react-native-reanimated/android/src/main/cpp/headers
+        ../../react-native-reanimated/Common/cpp/headers
+        ../../react-native-reanimated/Common/cpp/hidden_headers
 )
 
 find_library(
