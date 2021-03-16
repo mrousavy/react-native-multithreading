@@ -9,6 +9,7 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "babel-plugin-module-resolver": "^4.1.0",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-reanimated": "^2.0.0"
