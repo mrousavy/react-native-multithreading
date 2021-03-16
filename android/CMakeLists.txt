@@ -8,6 +8,8 @@ add_library(cpp
             ../cpp/RNMultithreadingInstaller.cpp
             cpp-adapter.cpp
             ../../react-native/ReactCommon/jsi/jsi/jsi.cpp
+        ../../react-native-reanimated/android/src/main/cpp/AndroidErrorHandler.cpp
+        ../../react-native-reanimated/android/src/main/cpp/AndroidScheduler.cpp
 )
 
 # Specifies a path to native header files.
@@ -16,4 +18,5 @@ include_directories(
         ../../react-native/React
         ../../react-native/React/Base
         ../../react-native/ReactCommon/jsi
+        ../../react-native-reanimated/android/src/main/cpp/headers
 )
