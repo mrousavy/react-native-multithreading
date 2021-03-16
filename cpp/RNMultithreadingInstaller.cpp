@@ -35,11 +35,15 @@ void install(jsi::Runtime& runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
                                                            1,  // run
                                                            [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-    auto function = arguments[0].asObject(runtime).asFunction(runtime);
+    if (!arguments[0].isObject())
+      throw jsi::JSError(runtime, "spawnThread: First argument has to be a function!");
+    
+    auto worklet = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
+    
     auto spawnThreadCallback = jsi::Function::createFromHostFunction(runtime,
                                                                      jsi::PropNameID::forAscii(runtime, "spawnThreadCallback"),
                                                                      2,
-                                                                     [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
+                                                                     [worklet](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
       auto resolverValue = std::make_shared<jsi::Value>((arguments[0].asObject(runtime)));
       auto rejecterValue = std::make_shared<jsi::Value>((arguments[1].asObject(runtime)));
       
@@ -53,19 +57,16 @@ void install(jsi::Runtime& runtime,
           rejecterValue->asObject(runtime).asFunction(runtime).call(runtime, jsi::JSError(runtime, message).value());
         });
       };
-      auto run = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
       
-      pool.enqueue([resolver, rejecter, run]() {
+      pool.enqueue([resolver, rejecter, worklet]() {
         try {
           auto& runtime = *manager->runtime;
-          auto funcValue = run->getValue(runtime);
-          auto func = funcValue.asObject(runtime).asFunction(runtime);
-          auto result = func.callWithThis(runtime, func);
+          auto function = worklet->getValue(runtime).asObject(runtime).asFunction(runtime);
+          auto result = function.getFunction(runtime).callWithThis(runtime, function);
           
-          // TODO: I probably have to call this on the other thread again.
+          // TODO: Copy over result to other runtime to make it thread-safe
           resolver(jsi::Value(42));
         } catch (std::exception& exc) {
-          // TODO: I probably have to call this on the other thread again.
           rejecter(exc.what());
         }
       });
