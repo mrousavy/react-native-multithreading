@@ -24,7 +24,7 @@ npm install react-native-multithreading
 npx pod-install
 ```
 
-> Requires [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated) 2.0.1 or later
+> Requires a version of react-native-reanimated which includes [PR #1790](https://github.com/software-mansion/react-native-reanimated/pull/1790). Either patch it yourself, or wait until that lands in a release.
 
 > ⚠️ Warning: This is still just a proof of concept - do not use this library in production! ⚠️
 
@@ -104,7 +104,6 @@ console.log(`Fibonacci Result: ${result}`)
 2. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
 3. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
 4. `console` logging is not yet supported. You can use `global._log(message)` to log something to the native console (Xcode Log output).
-5. This library requires a version of react-native-reanimated which includes [PR #1790](https://github.com/software-mansion/react-native-reanimated/pull/1790). Either patch it yourself, or wait until that lands in a release.
 
 ## License
 
