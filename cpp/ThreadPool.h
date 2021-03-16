@@ -15,21 +15,19 @@
 #include <unordered_map>
 #include <jsi/jsi.h>
 
-typedef std::function<void (facebook::jsi::Runtime&)> task_t;
-
 namespace mrousavy {
 namespace multithreading {
 
 class ThreadPool {
 public:
   ThreadPool(size_t threadCount);
-  void enqueue(task_t task);
+  std::future<void> enqueue(std::function<void()> task);
   ~ThreadPool();
 private:
   // need to keep track of threads so we can join them
   std::vector<std::thread> workers;
   // the task queue
-  std::queue<task_t> tasks;
+  std::queue<std::function<void()>> tasks;
   
   // synchronization
   std::mutex queue_mutex;

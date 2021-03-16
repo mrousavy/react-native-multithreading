@@ -18,13 +18,8 @@ namespace multithreading {
 ThreadPool::ThreadPool(size_t threads): stop(false) {
   for (size_t i = 0; i < threads; ++i) {
     workers.emplace_back([this, i] {
-      auto runtime = makeJSIRuntime();
-      std::stringstream stringstream;
-      stringstream << "THREAD #" << i;
-      reanimated::RuntimeDecorator::decorateRuntime(*runtime, stringstream.str());
-      
       while (true) {
-        task_t task;
+        std::function<void()> task;
         
         {
           std::unique_lock<std::mutex> lock(this->queue_mutex);
@@ -36,14 +31,17 @@ ThreadPool::ThreadPool(size_t threads): stop(false) {
           this->tasks.pop();
         }
         
-        task(*runtime);
+        task();
       }
     });
   }
 }
 
 // add new work item to the pool
-void ThreadPool::enqueue(task_t task) {
+std::future<void> ThreadPool::enqueue(std::function<void()> func) {
+  auto task = std::make_shared<std::packaged_task<void()>>(std::bind(std::forward<std::function<void()>>(func)));
+  std::future<void> res = task->get_future();
+  
   {
     std::unique_lock<std::mutex> lock(queue_mutex);
     
@@ -51,9 +49,11 @@ void ThreadPool::enqueue(task_t task) {
     if (stop)
       throw std::runtime_error("enqueue on stopped ThreadPool");
     
-    tasks.emplace(task);
+    tasks.emplace([task](){ (*task)(); });
   }
+  
   condition.notify_one();
+  return res;
 }
 
 // the destructor joins all threads

@@ -3,17 +3,30 @@
 #include <RNReanimated/Scheduler.h>
 #include <RNReanimated/ShareableValue.h>
 #include <RNReanimated/RuntimeManager.h>
+#include <RNReanimated/RuntimeDecorator.h>
+#include <RNReanimated/ErrorHandler.h>
+#include "MakeJSIRuntime.h"
 
 #define MAX_THREAD_COUNT 2
 
 namespace mrousavy {
 namespace multithreading {
 
-static ThreadPool pool(MAX_THREAD_COUNT);
+static ThreadPool pool(1);
+static std::unique_ptr<reanimated::RuntimeManager> manager;
 
 //reanimated::RuntimeManager manager;
 
 void install(jsi::Runtime& runtime) {
+  // Quickly setup the runtime - this is executed in parallel, and _might_ introduce race conditions if spawnThread is called before this finishes.
+  pool.enqueue([]() {
+    auto runtime = makeJSIRuntime();
+    reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD");
+    manager = std::make_unique<reanimated::RuntimeManager>(std::move(runtime),
+                                                           std::shared_ptr<reanimated::ErrorHandler>(),
+                                                           std::shared_ptr<reanimated::Scheduler>());
+  });
+  
   // spawnThread(run: () => T): Promise<T>
   auto spawnThread = jsi::Function::createFromHostFunction(runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
@@ -37,10 +50,11 @@ void install(jsi::Runtime& runtime) {
           .call(runtime, jsi::JSError(runtime, message).value());
       };
       // TODO: Get correct RuntimeManager instance
-      auto run = reanimated::ShareableValue::adapt(runtime, arguments[0], nullptr);
+      auto run = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
       
-      pool.enqueue([&resolver, &rejecter, run](jsi::Runtime& runtime) {
+      pool.enqueue([&resolver, &rejecter, run]() {
         try {
+          auto& runtime = *manager->runtime;
           auto func = run->getValue(runtime).asObject(runtime).asFunction(runtime);
           auto result = func.callWithThis(runtime, func);
           
