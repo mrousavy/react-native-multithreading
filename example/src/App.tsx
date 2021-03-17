@@ -7,9 +7,10 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  Button,
 } from 'react-native';
 import { spawnThread } from 'react-native-multithreading';
-import 'react-native-reanimated';
+import { runOnJS, runOnUI } from 'react-native-reanimated';
 
 const fibonacci = (num: number): number => {
   'worklet';
@@ -26,6 +27,7 @@ const fibonacci = (num: number): number => {
 };
 
 export default function App() {
+  const [isBenchmarking, setIsBenchmarking] = React.useState(false);
   const [isRunning, setIsRunning] = React.useState(false);
   const [input, setInput] = React.useState('5');
   const [result, setResult] = React.useState<number | undefined>();
@@ -53,6 +55,73 @@ export default function App() {
     }
   }, []);
 
+  const runBenchmark = React.useCallback(
+    async (thread: 'react' | 'custom' | 'ui') => {
+      const benchmark = () => {
+        'worklet';
+        const start = performance.now();
+        function p(n: number) {
+          for (var i = 2; i * i <= n; i++) {
+            if (n % i === 0) {
+              return false;
+            }
+          }
+          return true;
+        }
+
+        var sum = 0;
+        for (var k = 2; k < 1000000; k++) {
+          if (p(k)) {
+            sum++;
+          }
+        }
+        const end = performance.now();
+        return {
+          result: sum,
+          duration: end - start,
+        };
+      };
+      setIsBenchmarking(true);
+      switch (thread) {
+        case 'react': {
+          for (let i = 0; i < 5; i++) {
+            const r = benchmark();
+            console.log(`REACT: Run #${i}: ${r.result} (took ${r.duration}ms)`);
+          }
+          setIsBenchmarking(false);
+          break;
+        }
+        case 'custom': {
+          await spawnThread(() => {
+            'worklet';
+            for (let i = 0; i < 5; i++) {
+              const r = benchmark();
+              // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
+              console.log(
+                `CUSTOM: Run #${i}: ${r.result} (took ${r.duration}ms)`
+              );
+            }
+          });
+          setIsBenchmarking(false);
+          break;
+        }
+        case 'ui': {
+          runOnUI(() => {
+            'worklet';
+            for (let i = 0; i < 5; i++) {
+              const r = benchmark();
+              // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
+              global._log(`UI: Run #${i}: ${r.result} (took ${r.duration}ms)`);
+            }
+            runOnJS(setIsBenchmarking)(false);
+          })();
+          break;
+        }
+      }
+    },
+    []
+  );
+
   React.useEffect(() => {
     const parsedInput = Number.parseInt(input, 10);
     run(parsedInput);
@@ -72,6 +141,22 @@ export default function App() {
       ) : (
         <Text>Fibonacci Number: {result}</Text>
       )}
+
+      <View style={styles.bottom}>
+        <Button
+          title="Run heavy calculation on React-JS Thread"
+          onPress={() => runBenchmark('react')}
+        />
+        <Button
+          title="Run heavy calculation on separate Thread"
+          onPress={() => runBenchmark('custom')}
+        />
+        <Button
+          title="Run heavy calculation on REA UI Thread"
+          onPress={() => runBenchmark('ui')}
+        />
+        {isBenchmarking && <ActivityIndicator />}
+      </View>
     </View>
   );
 }
@@ -91,5 +176,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     textAlign: 'center',
     fontSize: 14,
+  },
+  bottom: {
+    marginTop: 50,
   },
 });
