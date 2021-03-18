@@ -12,10 +12,3 @@ declare var _LABEL: string | undefined;
  * Sets the global console object
  */
 declare var _setGlobalConsole: (console: any) => void;
-
-declare var performance: { now: () => number };
-
-/**
- * Logs to the native console window (Xcode logs/Android logcat)
- */
-declare var _log: (message: string) => void | undefined;

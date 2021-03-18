@@ -10,8 +10,10 @@ import {
   Button,
 } from 'react-native';
 import { spawnThread } from 'react-native-multithreading';
+import 'react-native-reanimated';
 import { runOnJS, runOnUI } from 'react-native-reanimated';
 
+// calculates the fibonacci number - that can be optimized really good so it's really really fast.
 const fibonacci = (num: number): number => {
   'worklet';
   // Uses array to store every single fibonacci number
@@ -26,13 +28,40 @@ const fibonacci = (num: number): number => {
   return fib[fib.length - 1];
 };
 
+// complex branches with modular if so that it cannot be optimized very well. Takes ~4-5 seconds on my i9.
+const benchmark = () => {
+  'worklet';
+  // global.performance is not yet installed. I will do that soon.
+  const start = performance.now();
+  function p(n: number) {
+    for (var i = 2; i * i <= n; i++) {
+      if (n % i === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  var sum = 0;
+  for (var k = 2; k < 1000000; k++) {
+    if (p(k)) {
+      sum++;
+    }
+  }
+  const end = performance.now();
+  return {
+    result: sum,
+    duration: end - start,
+  };
+};
+
 export default function App() {
   const [isBenchmarking, setIsBenchmarking] = React.useState(false);
   const [isRunning, setIsRunning] = React.useState(false);
   const [input, setInput] = React.useState('5');
   const [result, setResult] = React.useState<number | undefined>();
 
-  const run = React.useCallback(async (parsedInput: number) => {
+  const runFibonacci = React.useCallback(async (parsedInput: number) => {
     setIsRunning(true);
     try {
       const fib = await spawnThread(() => {
@@ -55,38 +84,22 @@ export default function App() {
     }
   }, []);
 
+  React.useEffect(() => {
+    const parsedInput = Number.parseInt(input, 10);
+    runFibonacci(parsedInput);
+  }, [runFibonacci, input]);
+
   const runBenchmark = React.useCallback(
     async (thread: 'react' | 'custom' | 'ui') => {
-      const benchmark = () => {
-        'worklet';
-        const start = performance.now();
-        function p(n: number) {
-          for (var i = 2; i * i <= n; i++) {
-            if (n % i === 0) {
-              return false;
-            }
-          }
-          return true;
-        }
-
-        var sum = 0;
-        for (var k = 2; k < 1000000; k++) {
-          if (p(k)) {
-            sum++;
-          }
-        }
-        const end = performance.now();
-        return {
-          result: sum,
-          duration: end - start,
-        };
-      };
       setIsBenchmarking(true);
       switch (thread) {
         case 'react': {
           for (let i = 0; i < 5; i++) {
             const r = benchmark();
-            console.log(`REACT: Run #${i}: ${r.result} (took ${r.duration}ms)`);
+            global.nativeLoggingHook(
+              `REACT: Run #${i}: ${r.result} (took ${r.duration}ms)`,
+              1
+            );
           }
           setIsBenchmarking(false);
           break;
@@ -97,7 +110,7 @@ export default function App() {
             for (let i = 0; i < 5; i++) {
               const r = benchmark();
               // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
-              console.log(
+              global._log(
                 `CUSTOM: Run #${i}: ${r.result} (took ${r.duration}ms)`
               );
             }
@@ -106,26 +119,22 @@ export default function App() {
           break;
         }
         case 'ui': {
-          runOnUI(() => {
-            'worklet';
-            for (let i = 0; i < 5; i++) {
-              const r = benchmark();
-              // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
-              global._log(`UI: Run #${i}: ${r.result} (took ${r.duration}ms)`);
-            }
-            runOnJS(setIsBenchmarking)(false);
-          })();
+          // couldn't manage to get this working, some weird undefined errors
+          // runOnUI(() => {
+          //   'worklet';
+          //   for (let i = 0; i < 5; i++) {
+          //     const r = benchmark();
+          //     // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
+          //     global._log(`UI: Run #${i}: ${r.result} (took ${r.duration}ms)`);
+          //   }
+          //   runOnJS(setIsBenchmarking)(false);
+          // })();
           break;
         }
       }
     },
     []
   );
-
-  React.useEffect(() => {
-    const parsedInput = Number.parseInt(input, 10);
-    run(parsedInput);
-  }, [run, input]);
 
   return (
     <View style={styles.container}>
