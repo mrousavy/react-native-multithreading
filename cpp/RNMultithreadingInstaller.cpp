@@ -1,10 +1,20 @@
 #include "RNMultithreadingInstaller.h"
+#include <memory>
 #include "ThreadPool.h"
+
+#if __has_include(<RNReanimated/Scheduler.h>)
 #include <RNReanimated/Scheduler.h>
 #include <RNReanimated/ShareableValue.h>
 #include <RNReanimated/RuntimeManager.h>
 #include <RNReanimated/RuntimeDecorator.h>
 #include <RNReanimated/ErrorHandler.h>
+#else
+#include "Tools/Scheduler.h"
+#include "SharedItems/ShareableValue.h"
+#include "SharedItems/RuntimeManager.h"
+#include "Tools/RuntimeDecorator.h"
+#include "SpecTools/ErrorHandler.h"
+#endif
 #include "MakeJSIRuntime.h"
 
 namespace mrousavy {
@@ -24,8 +34,9 @@ void install(jsi::Runtime& runtime,
     auto runtime = makeJSIRuntime();
     reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD_1");
     auto scheduler = makeScheduler();
+    auto errorHandler = makeErrorHandler(scheduler);
     manager = std::make_unique<reanimated::RuntimeManager>(std::move(runtime),
-                                                           makeErrorHandler(scheduler),
+                                                           errorHandler,
                                                            scheduler);
   });
   auto setupFuture = std::make_shared<std::future<void>>(std::move(setupFutureSingle));
