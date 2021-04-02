@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { spawnThread } from 'react-native-multithreading';
 import 'react-native-reanimated';
 import { PressableOpacity } from './PressableOpacity';
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 50,
   },
   description: {
     maxWidth: '80%',
