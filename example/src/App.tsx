@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { spawnThread } from 'react-native-multithreading';
 import 'react-native-reanimated';
-import { runOnJS, runOnUI } from 'react-native-reanimated';
 
 // calculates the fibonacci number - that can be optimized really good so it's really really fast.
 const fibonacci = (num: number): number => {
@@ -55,8 +54,11 @@ const benchmark = () => {
   };
 };
 
+const BENCHMARK_TIMES = 5;
+
 export default function App() {
-  const [isBenchmarking, setIsBenchmarking] = React.useState(false);
+  const [isBenchmarkingCustom, setIsBenchmarkingCustom] = React.useState(false);
+  const [isBenchmarkingReact, setIsBenchmarkingReact] = React.useState(false);
   const [isRunning, setIsRunning] = React.useState(false);
   const [input, setInput] = React.useState('5');
   const [result, setResult] = React.useState<number | undefined>();
@@ -91,44 +93,45 @@ export default function App() {
 
   const runBenchmark = React.useCallback(
     async (thread: 'react' | 'custom' | 'ui') => {
-      setIsBenchmarking(true);
+      console.log(
+        'Starting Benchmark - Please see native console (Xcode Logs/Android Logcat) for output!'
+      );
       switch (thread) {
         case 'react': {
-          for (let i = 0; i < 5; i++) {
+          setIsBenchmarkingReact(true);
+          global.nativeLoggingHook(
+            `REACT_THREAD: Begin blocking React-JS Thread...`,
+            1
+          );
+          for (let i = 0; i < BENCHMARK_TIMES; i++) {
             const r = benchmark();
             global.nativeLoggingHook(
-              `REACT: Run #${i}: ${r.result} (took ${r.duration}ms)`,
+              `REACT_THREAD: Run #${i}: ${r.result} (took ${r.duration}ms)`,
               1
             );
           }
-          setIsBenchmarking(false);
+          global.nativeLoggingHook(
+            `REACT_THREAD: React-JS Thread unblocked!`,
+            1
+          );
+          setIsBenchmarkingReact(false);
           break;
         }
         case 'custom': {
+          setIsBenchmarkingCustom(true);
           await spawnThread(() => {
             'worklet';
-            for (let i = 0; i < 5; i++) {
+            _log(`CUSTOM_THREAD: Begin blocking Custom Thread...`);
+            for (let i = 0; i < BENCHMARK_TIMES; i++) {
               const r = benchmark();
               // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
-              global._log(
-                `CUSTOM: Run #${i}: ${r.result} (took ${r.duration}ms)`
+              _log(
+                `CUSTOM_THREAD: Run #${i}: ${r.result} (took ${r.duration}ms)`
               );
             }
+            _log(`CUSTOM_THREAD: Custom Thread unblocked!`);
           });
-          setIsBenchmarking(false);
-          break;
-        }
-        case 'ui': {
-          // couldn't manage to get this working, some weird undefined errors
-          // runOnUI(() => {
-          //   'worklet';
-          //   for (let i = 0; i < 5; i++) {
-          //     const r = benchmark();
-          //     // can't use console.log because that just dispatches to React-JS thread, which might be blocked.
-          //     global._log(`UI: Run #${i}: ${r.result} (took ${r.duration}ms)`);
-          //   }
-          //   runOnJS(setIsBenchmarking)(false);
-          // })();
+          setIsBenchmarkingCustom(false);
           break;
         }
       }
@@ -156,15 +159,12 @@ export default function App() {
           title="Run heavy calculation on React-JS Thread"
           onPress={() => runBenchmark('react')}
         />
+        {isBenchmarkingReact && <ActivityIndicator />}
         <Button
           title="Run heavy calculation on separate Thread"
           onPress={() => runBenchmark('custom')}
         />
-        <Button
-          title="Run heavy calculation on REA UI Thread"
-          onPress={() => runBenchmark('ui')}
-        />
-        {isBenchmarking && <ActivityIndicator />}
+        {isBenchmarkingCustom && <ActivityIndicator />}
       </View>
     </View>
   );

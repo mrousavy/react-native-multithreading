@@ -99,7 +99,9 @@
     "root": true,
     "globals": {
       "_setGlobalConsole": true,
-      "_LABEL": true
+      "_LABEL": true,
+      "_log": true,
+      "performance": true
     },
     "extends": [
       "@react-native-community",
