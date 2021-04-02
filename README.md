@@ -108,7 +108,7 @@ console.log(`Fibonacci Result: ${result}`)
 
 ## What's not possible?
 
-1. At the moment, only iOS is implemented. I cannot implement Android until react-native-reanimated gets published with source-code (no prebuilt .aar)
+1. At the moment, only iOS is implemented. I'm trying to get Android working in [#3](https://github.com/mrousavy/react-native-multithreading/pull/3) - if anyone can help me with the CMake part I'd appreciate it.
 2. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
 3. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
 
