@@ -1,3 +1,4 @@
+import 'react-native-reanimated';
 import { runOnJS } from 'react-native-reanimated';
 
 const g = global as any;

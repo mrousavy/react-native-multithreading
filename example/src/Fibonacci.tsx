@@ -11,6 +11,7 @@ import {
 import { spawnThread } from 'react-native-multithreading';
 import 'react-native-reanimated';
 
+// calculates the fibonacci number - that can be optimized really good so it's really really fast.
 const fibonacci = (num: number): number => {
   'worklet';
   // Uses array to store every single fibonacci number
@@ -30,7 +31,7 @@ export default function App() {
   const [input, setInput] = React.useState('5');
   const [result, setResult] = React.useState<number | undefined>();
 
-  const run = React.useCallback(async (parsedInput: number) => {
+  const runFibonacci = React.useCallback(async (parsedInput: number) => {
     setIsRunning(true);
     try {
       const fib = await spawnThread(() => {
@@ -55,11 +56,17 @@ export default function App() {
 
   React.useEffect(() => {
     const parsedInput = Number.parseInt(input, 10);
-    run(parsedInput);
-  }, [run, input]);
+    runFibonacci(parsedInput);
+  }, [runFibonacci, input]);
 
   return (
     <View style={styles.container}>
+      <Text style={styles.description}>
+        In this example you can enter a number in the TextInput while the custom
+        thread will calculate the fibonacci sequence for the given number
+        completely async and in parallel, while the React-JS Thread stays fully
+        responsive.
+      </Text>
       <Text>Input:</Text>
       <TextInput
         style={styles.input}
@@ -80,7 +87,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 150,
+    paddingTop: 70,
+  },
+  description: {
+    maxWidth: '80%',
+    fontSize: 15,
+    color: '#242424',
+    marginBottom: 80,
   },
   input: {
     width: '50%',
