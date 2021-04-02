@@ -48,22 +48,24 @@ export default function ThreadBlocking() {
       switch (thread) {
         case 'react': {
           setIsBenchmarkingReact(true);
-          global.nativeLoggingHook(
-            `REACT_THREAD: Begin blocking React-JS Thread...`,
-            1
-          );
-          for (let i = 0; i < BENCHMARK_TIMES; i++) {
-            const r = benchmark();
+          requestAnimationFrame(() => {
             global.nativeLoggingHook(
-              `REACT_THREAD: Run #${i}: ${r.result} (took ${r.duration}ms)`,
+              `REACT_THREAD: Begin blocking React-JS Thread...`,
               1
             );
-          }
-          global.nativeLoggingHook(
-            `REACT_THREAD: React-JS Thread unblocked!`,
-            1
-          );
-          setIsBenchmarkingReact(false);
+            for (let i = 0; i < BENCHMARK_TIMES; i++) {
+              const r = benchmark();
+              global.nativeLoggingHook(
+                `REACT_THREAD: Run #${i}: ${r.result} (took ${r.duration}ms)`,
+                1
+              );
+            }
+            global.nativeLoggingHook(
+              `REACT_THREAD: React-JS Thread unblocked!`,
+              1
+            );
+            setIsBenchmarkingReact(false);
+          });
           break;
         }
         case 'custom': {
@@ -90,21 +92,43 @@ export default function ThreadBlocking() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.description}>
+        In this example you can run a heavy benchmark/calculation on the default
+        React-JS Thread and on the separate JS Thread. When the default React-JS
+        Thread gets blocked, your entire application freezes - whereas the
+        separate Thread does not affect application execution at all and is
+        perfectly designed for heavy synchronous calculations.
+      </Text>
       <PressableOpacity
+        style={styles.aliveButton}
         onPress={() => console.log("REACT_THREAD: Hello, I'm alive 👋")}
       >
-        <Text>Check if React-JS Thread is alive</Text>
+        <Text style={styles.buttonText}>
+          Check if React-JS Thread is responsive
+        </Text>
       </PressableOpacity>
-      <Button
-        title="Run heavy calculation on React-JS Thread"
+      <PressableOpacity
+        style={styles.button}
         onPress={() => runBenchmark('react')}
-      />
-      <Text>React-JS Thread blocked: {isBlockingReactThread}</Text>
-      <Button
-        title="Run heavy calculation on separate Thread"
+      >
+        <Text style={styles.buttonText}>
+          Run heavy calculation on React-JS Thread
+        </Text>
+      </PressableOpacity>
+      <Text style={styles.isBlockedText}>
+        React-JS Thread blocked: {isBlockingReactThread ? 'true' : 'false'}
+      </Text>
+      <PressableOpacity
+        style={styles.button}
         onPress={() => runBenchmark('custom')}
-      />
-      <Text>Custom Thread blocked: {isBlockingCustomThread}</Text>
+      >
+        <Text style={styles.buttonText}>
+          Run heavy calculation on separate Thread
+        </Text>
+      </PressableOpacity>
+      <Text style={styles.isBlockedText}>
+        Custom Thread blocked: {isBlockingCustomThread ? 'true' : 'false'}
+      </Text>
     </View>
   );
 }
@@ -113,7 +137,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 150,
+    justifyContent: 'center',
+  },
+  description: {
+    maxWidth: '80%',
+    fontSize: 15,
+    color: '#242424',
   },
   input: {
     width: '50%',
@@ -127,5 +156,31 @@ const styles = StyleSheet.create({
   },
   bottom: {
     marginTop: 50,
+  },
+  isBlockedText: {
+    marginTop: 5,
+    fontSize: 14,
+    color: '#454545',
+  },
+  aliveButton: {
+    marginTop: 10,
+    marginBottom: 40,
+    backgroundColor: '#90ee90',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    maxWidth: '80%',
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: '#b35f5f',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });
