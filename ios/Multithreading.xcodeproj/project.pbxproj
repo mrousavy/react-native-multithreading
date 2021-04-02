@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5E555C0D2413F4C50049A1A2 /* RNMultithreading.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNMultithreading.mm */; };
+		B87D0C2F26174EC7004B892B /* MakeJSIRuntime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B87D0C2E26174EC7004B892B /* MakeJSIRuntime.cpp */; };
 		B887B6332600A8E100C68EE7 /* ThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B887B6322600A8E100C68EE7 /* ThreadPool.cpp */; };
 		B893C01225FFE54800F249DD /* RNMultithreadingInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B893C01125FFE54800F249DD /* RNMultithreadingInstaller.cpp */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,7 @@
 		134814201AA4EA6300B7C361 /* libMultithreading.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMultithreading.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5891CC2AC0600A0062D /* RNMultithreading.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RNMultithreading.mm; sourceTree = "<group>"; };
 		B87D0BF726174A7F004B892B /* MakeJSIRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MakeJSIRuntime.h; path = ../cpp/MakeJSIRuntime.h; sourceTree = "<group>"; };
+		B87D0C2E26174EC7004B892B /* MakeJSIRuntime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MakeJSIRuntime.cpp; path = ../cpp/MakeJSIRuntime.cpp; sourceTree = "<group>"; };
 		B887B6312600A8CF00C68EE7 /* ThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThreadPool.h; path = ../cpp/ThreadPool.h; sourceTree = "<group>"; };
 		B887B6322600A8E100C68EE7 /* ThreadPool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ThreadPool.cpp; path = ../cpp/ThreadPool.cpp; sourceTree = "<group>"; };
 		B893C01025FFE54800F249DD /* RNMultithreadingInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNMultithreadingInstaller.h; path = ../cpp/RNMultithreadingInstaller.h; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				B87D0BF726174A7F004B892B /* MakeJSIRuntime.h */,
+				B87D0C2E26174EC7004B892B /* MakeJSIRuntime.cpp */,
 				B887B6312600A8CF00C68EE7 /* ThreadPool.h */,
 				B887B6322600A8E100C68EE7 /* ThreadPool.cpp */,
 				B893C01125FFE54800F249DD /* RNMultithreadingInstaller.cpp */,
@@ -126,6 +129,7 @@
 				5E555C0D2413F4C50049A1A2 /* RNMultithreading.mm in Sources */,
 				B887B6332600A8E100C68EE7 /* ThreadPool.cpp in Sources */,
 				B893C01225FFE54800F249DD /* RNMultithreadingInstaller.cpp in Sources */,
+				B87D0C2F26174EC7004B892B /* MakeJSIRuntime.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

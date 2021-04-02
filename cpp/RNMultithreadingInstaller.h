@@ -2,8 +2,14 @@
 
 #pragma once
 #include <jsi/jsi.h>
+
+#if __has_include(<RNReanimated/Scheduler.h>)
 #include <RNReanimated/Scheduler.h>
 #include <RNReanimated/ErrorHandler.h>
+#else
+#include "Tools/Scheduler.h"
+#include "SpecTools/ErrorHandler.h"
+#endif
 
 using namespace facebook;
 
