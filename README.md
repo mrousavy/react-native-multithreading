@@ -24,7 +24,7 @@ npm install react-native-multithreading
 npx pod-install
 ```
 
-> Requires a version of react-native-reanimated which includes [PR #1790](https://github.com/software-mansion/react-native-reanimated/pull/1790). Either patch it yourself, or wait until that lands in a release.
+> Requires a version of react-native-reanimated which includes [my PR](https://github.com/software-mansion/react-native-reanimated/pull/1861) ([**2.1.0**](https://github.com/software-mansion/react-native-reanimated/releases/tag/2.1.0) or above).
 
 > ⚠️ Warning: This is still just a proof of concept - do not use this library in production! ⚠️
 
