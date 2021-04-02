@@ -145,19 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#242424',
   },
-  input: {
-    width: '50%',
-    paddingVertical: 5,
-    marginVertical: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 5,
-    borderColor: 'black',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-  bottom: {
-    marginTop: 50,
-  },
   isBlockedText: {
     marginTop: 5,
     fontSize: 14,
