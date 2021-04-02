@@ -38,7 +38,7 @@ android {
         versionCode 1
         versionName "1.0"
         ndk {
-            moduleName("reanimated")
+            moduleName("rnmultithreading")
         }
         buildConfigField("boolean", "IS_INTERNAL_BUILD", "false")
         buildConfigField("int", "EXOPACKAGE_FLAGS", "0")
@@ -109,7 +109,7 @@ def follyReplaceContent = '''
 '''
 
 task Log {
-    print("building Reanimated2")
+    print("building react-native-multithreading..")
 }
 
 task createNativeDepsDirectories {
@@ -388,17 +388,17 @@ task extractJNIFiles {
     }
 }
 
-task buildReanimated(dependsOn: [prepareJSC, prepareBoost, prepareDoubleConversion, prepareFolly, prepareGlog, prepareHermes, extractAARHeaders, extractJNIFiles], type: Exec) {
+task buildRnMultithreading(dependsOn: [prepareJSC, prepareBoost, prepareDoubleConversion, prepareFolly, prepareGlog, prepareHermes, extractAARHeaders, extractJNIFiles], type: Exec) {
     inputs.dir("src/main/JNI")
     inputs.dir("src/main/cpp")
     inputs.dir("src/main/Common")
-    outputs.dir("$buildDir/reanimated-ndk/all")
+    outputs.dir("$buildDir/rnmultithreading-ndk/all")
     outputs.upToDateWhen { false }
     commandLine(getNdkBuildFullPath(),
             "NDK_PROJECT_PATH=null",
             "NDK_APPLICATION_MK=$projectDir/src/main/JNI/Application.mk",
             "NDK_OUT=" + temporaryDir,
-            "NDK_LIBS_OUT=$buildDir/reanimated-ndk/all",
+            "NDK_LIBS_OUT=$buildDir/rnmultithreading-ndk/all",
             "THIRD_PARTY_NDK_DIR=$buildDir/third-party-ndk",
             "JSI_PATH=$projectDir/../node_modules/react-native/ReactCommon/jsi",
             "REACT_COMMON_DIR=$reactNative/ReactCommon",
@@ -428,8 +428,9 @@ task cleanNdkLibs(type: Exec) {
     }
 }
 
-task packageNdkLibs(dependsOn: buildReanimated, type: Copy) {
-    from("$buildDir/reanimated-ndk/all")
+task packageNdkLibs(dependsOn: buildRnMultithreading, type: Copy) {
+    from("$buildDir/rnmultithreading-ndk/all")
+    include("**/librnmultithreading.so")
     include("**/libreanimated.so")
     if(REACT_VERSION < 64) {
         include("**/libturbomodulejsijni.so")
