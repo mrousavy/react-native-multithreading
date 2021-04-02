@@ -1,34 +1,11 @@
 import React, { useCallback } from 'react';
-import {
-  PressableProps,
-  Pressable,
-  PressableStateCallbackType,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { PressableProps, Pressable, ViewStyle } from 'react-native';
 
 export interface PressableOpacityProps extends PressableProps {
-  /**
-   * The opacity to use when `disabled={true}`
-   *
-   * @default 1
-   */
   disabledOpacity?: number;
-  /**
-   * The opacity to animate to when the user presses the button
-   *
-   * @default 0.2
-   */
   activeOpacity?: number;
 }
 
-export type StyleType = (
-  state: PressableStateCallbackType
-) => StyleProp<ViewStyle>;
-
-/**
- * A Pressable component that lowers opacity when in pressed state. Uses the JS Pressability API.
- */
 export const PressableOpacity = ({
   style,
   disabled = false,
@@ -47,7 +24,7 @@ export const PressableOpacity = ({
     },
     [activeOpacity, disabled, disabledOpacity]
   );
-  const _style = useCallback<StyleType>(
+  const _style = useCallback(
     ({ pressed }) => [style as ViewStyle, { opacity: getOpacity(pressed) }],
     [getOpacity, style]
   );
