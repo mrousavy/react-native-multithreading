@@ -66,7 +66,7 @@ The React-JS Thread will continue execution while the custom thread will run the
 
 ### Await
 
-Since `spawnThread` returns a `Promise`, you can also await the result. The React-JS Thread will not be blocked and will still be able to continue execution elsewhere (timers, callbacks, ...), while the custom thread runs the given function in a custom parallel runtime.
+Since `spawnThread` returns a `Promise`, you can also await the result. The React-JS Thread will not be blocked and will still be able to continue execution elsewhere (timers, callbacks, rendering, ...), while the custom thread runs the given function in a custom parallel runtime.
 
 ```ts
 const result = await spawnThread(() => {
