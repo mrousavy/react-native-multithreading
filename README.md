@@ -100,11 +100,13 @@ console.log(`Fibonacci Result: ${result}`)
 
 ## What's possible?
 
+* You can run any JavaScript code you want in there.
 * You can use variables from "outside" (e.g. state), but those will be immutable/frozen.
-* You can use functions from "outside". If they also contain the `'worklet'` directive they can be called synchronously, otherwise they have to be dispatched to the JS thread by using `runOnJS`.
+* You can use functions from "outside". 
+   - Worklets (functions with the `'worklet'` directive) can be called synchronously
+   - Normal JS functions (e.g. setState) can be called with `runOnJS`
+   - Native JSI functions ("host functions") can be called synchronously (e.g. functions from [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv#usage))
 * You can assign Reanimated Shared Values.
-* You can call native JSI functions ("Host Functions") from a JSI library, e.g. every function [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv#usage) provides.
-* You can asynchronously dispatch calls to functions from "outside" using `runOnJS` from react-native-reanimated.
 
 ## What's not possible?
 
