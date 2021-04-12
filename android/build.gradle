@@ -360,6 +360,25 @@ task prepareJSC {
     }
 }
 
+task prepareReanimated() {
+    def reanimatedPackagePath = findNodeModulePath(projectDir, "react-native-reanimated")
+    if (!reanimatedPackagePath) {
+        throw new GradleScriptException("Could not find the react-native-reanimated npm package", null)
+    }
+
+    def reanimatedAAR = file("$reanimatedPackagePath/android/react-native-reanimated.aar")
+    if (!reanimatedAAR.exists()) {
+        throw new GradleScriptException("The react-native-reanimated npm package is missing \"android/react-native-reanimated.aar\"", null)
+    }
+
+    def soFiles = zipTree(reanimatedAAR).matching({ it.include "**/*.so" })
+
+    copy {
+        from soFiles
+        into "$thirdPartyNdkDir/reanimated"
+    }
+}
+
 task extractAARHeaders {
     doLast {
         configurations.extractHeaders.files.each {
@@ -388,7 +407,7 @@ task extractJNIFiles {
     }
 }
 
-task buildRnMultithreading(dependsOn: [prepareJSC, prepareBoost, prepareDoubleConversion, prepareFolly, prepareGlog, prepareHermes, extractAARHeaders, extractJNIFiles], type: Exec) {
+task buildRnMultithreading(dependsOn: [prepareJSC, prepareBoost, prepareDoubleConversion, prepareFolly, prepareGlog, prepareHermes, prepareReanimated, extractAARHeaders, extractJNIFiles], type: Exec) {
     inputs.dir("src/main/JNI")
     inputs.dir("src/main/cpp")
     inputs.dir("src/main/Common")
