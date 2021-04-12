@@ -2,7 +2,7 @@
 #include <jsi/jsi.h>
 #include <memory>
 
-#include "RNMultithreadingInstaller.h"
+#include "../Common/RNMultithreadingInstaller.h"
 
 #include "Tools/Scheduler.h"
 #include "SpecTools/ErrorHandler.h"
@@ -17,9 +17,8 @@ Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithread
     auto makeScheduler = []() -> std::shared_ptr<reanimated::Scheduler> {
         return std::shared_ptr<reanimated::Scheduler>();
     };
-    auto makeErrorHandler = []() -> std::shared_ptr<reanimated::ErrorHandler> {
+    auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler) -> std::shared_ptr<reanimated::ErrorHandler> {
         return std::shared_ptr<reanimated::ErrorHandler>();
-
     };
     mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
 /*
