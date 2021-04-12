@@ -28,8 +28,8 @@ static std::unique_ptr<reanimated::RuntimeManager> manager;
 //reanimated::RuntimeManager manager;
 
 void install(jsi::Runtime& runtime,
-             std::function<std::shared_ptr<reanimated::Scheduler>()> makeScheduler,
-             std::function<std::shared_ptr<reanimated::ErrorHandler>(std::shared_ptr<reanimated::Scheduler>)> makeErrorHandler) {
+             const std::function<std::shared_ptr<reanimated::Scheduler>()>& makeScheduler,
+             const std::function<std::shared_ptr<reanimated::ErrorHandler>(std::shared_ptr<reanimated::Scheduler>)>& makeErrorHandler) {
   // Quickly setup the runtime - this is executed in parallel, and _might_ introduce race conditions if spawnThread is called before this finishes.
   auto setupFutureSingle = pool.enqueue([makeScheduler, makeErrorHandler]() {
     auto runtime = makeJSIRuntime();
@@ -61,12 +61,12 @@ void install(jsi::Runtime& runtime,
       auto resolverValue = std::make_shared<jsi::Value>((arguments[0].asObject(runtime)));
       auto rejecterValue = std::make_shared<jsi::Value>((arguments[1].asObject(runtime)));
       
-      auto resolver = [&runtime, resolverValue](std::shared_ptr<reanimated::ShareableValue> shareableValue) {
+      auto resolver = [&runtime, resolverValue](const std::shared_ptr<reanimated::ShareableValue>& shareableValue) {
         manager->scheduler->scheduleOnJS([&runtime, resolverValue, shareableValue] () {
           resolverValue->asObject(runtime).asFunction(runtime).call(runtime, shareableValue->getValue(runtime));
         });
       };
-      auto rejecter = [&runtime, rejecterValue](std::string message) {
+      auto rejecter = [&runtime, rejecterValue](const std::string& message) {
         manager->scheduler->scheduleOnJS([&runtime, rejecterValue, message] () {
           rejecterValue->asObject(runtime).asFunction(runtime).call(runtime, jsi::JSError(runtime, message).value());
         });
