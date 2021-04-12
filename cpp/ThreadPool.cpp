@@ -8,6 +8,16 @@
 
 #include "ThreadPool.h"
 #include <sstream>
+#include <vector>
+#include <queue>
+#include <memory>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <future>
+#include <functional>
+#include <stdexcept>
+#include <unordered_map>
 
 namespace mrousavy {
 namespace multithreading {
