@@ -61,3 +61,4 @@ lib/
 
 
 .cxx/
+.externalNativeBuild/
