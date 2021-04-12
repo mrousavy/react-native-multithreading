@@ -377,6 +377,10 @@ task prepareReanimated() {
         from soFiles
         into "$thirdPartyNdkDir/reanimated"
     }
+    copy {
+        from "$buildDir/../patches/reanimated/Android.mk"
+        into "$thirdPartyNdkDir/reanimated"
+    }
 }
 
 task extractAARHeaders {
