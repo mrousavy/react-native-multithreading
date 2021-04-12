@@ -22,7 +22,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../../react-native-reanimated/Common/
 LOCAL_CFLAGS += -DONANDROID -fexceptions -frtti
 
 LOCAL_STATIC_LIBRARIES := libjsi callinvokerholder
-LOCAL_SHARED_LIBRARIES := libfolly_json libfbjni libreactnativejni libreanimated
+LOCAL_SHARED_LIBRARIES := libfolly_json libfbjni libreactnativejni
 
 include $(BUILD_SHARED_LIBRARY)
 
