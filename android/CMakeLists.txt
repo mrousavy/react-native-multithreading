@@ -13,6 +13,8 @@ add_library(
         #../../react-native/ReactCommon/jsi/jsi/jsi.cpp
 )
 
+# TODO: Add Reanimated (everything) and React Native (jsi, jsc/hermes) headers but let the end-user link them. Is that possible? Maybe https://cmake.org/cmake/help/latest/module/ExternalProject.html
+
 # Specifies a path to native header files.
 include_directories(
         ../../react-native/React
@@ -21,6 +23,7 @@ include_directories(
         ../../react-native/ReactCommon/jsi
         ../../react-native/ReactCommon/callinvoker
         ../../hermes-engine/android/include
+
         ../../react-native-reanimated/Common/cpp/headers/NativeModules
         ../../react-native-reanimated/Common/cpp/headers/Registries
         ../../react-native-reanimated/Common/cpp/headers/SharedItems
