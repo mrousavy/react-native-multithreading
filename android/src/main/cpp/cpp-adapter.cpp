@@ -4,8 +4,8 @@
 
 #include "../Common/RNMultithreadingInstaller.h"
 
-#include "Tools/Scheduler.h"
-#include "SpecTools/ErrorHandler.h"
+#include "Scheduler.h"
+#include "ErrorHandler.h"
 
 using namespace facebook;
 

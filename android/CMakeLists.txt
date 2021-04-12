@@ -21,7 +21,11 @@ include_directories(
         ../../react-native/ReactCommon/jsi
         ../../react-native/ReactCommon/callinvoker
         ../../hermes-engine/android/include
-        ../../react-native-reanimated/Common/cpp/headers
+        ../../react-native-reanimated/Common/cpp/headers/NativeModules
+        ../../react-native-reanimated/Common/cpp/headers/Registries
+        ../../react-native-reanimated/Common/cpp/headers/SharedItems
+        ../../react-native-reanimated/Common/cpp/headers/SpecTools
+        ../../react-native-reanimated/Common/cpp/headers/Tools
         ../../react-native-reanimated/Common/cpp/hidden_headers
         ../../react-native-reanimated/android/src/main/cpp/headers
         src/main/cpp

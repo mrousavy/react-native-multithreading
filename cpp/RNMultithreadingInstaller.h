@@ -7,8 +7,8 @@
 #include <RNReanimated/Scheduler.h>
 #include <RNReanimated/ErrorHandler.h>
 #else
-#include "Tools/Scheduler.h"
-#include "SpecTools/ErrorHandler.h"
+#include "Scheduler.h"
+#include "ErrorHandler.h"
 #endif
 
 using namespace facebook;

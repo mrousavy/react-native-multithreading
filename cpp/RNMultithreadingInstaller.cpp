@@ -9,11 +9,11 @@
 #include <RNReanimated/RuntimeDecorator.h>
 #include <RNReanimated/ErrorHandler.h>
 #else
-#include "Tools/Scheduler.h"
-#include "SharedItems/ShareableValue.h"
-#include "SharedItems/RuntimeManager.h"
-#include "Tools/RuntimeDecorator.h"
-#include "SpecTools/ErrorHandler.h"
+#include "Scheduler.h"
+#include "ShareableValue.h"
+#include "RuntimeManager.h"
+#include "RuntimeDecorator.h"
+#include "ErrorHandler.h"
 #endif
 
 #include "MakeJSIRuntime.h"
