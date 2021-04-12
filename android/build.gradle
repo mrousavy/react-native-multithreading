@@ -431,7 +431,6 @@ task cleanNdkLibs(type: Exec) {
 task packageNdkLibs(dependsOn: buildRnMultithreading, type: Copy) {
     from("$buildDir/rnmultithreading-ndk/all")
     include("**/librnmultithreading.so")
-    include("**/libreanimated.so")
     if(REACT_VERSION < 64) {
         include("**/libturbomodulejsijni.so")
     }

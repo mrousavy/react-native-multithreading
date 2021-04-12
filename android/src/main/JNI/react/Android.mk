@@ -23,7 +23,7 @@ LOCAL_CFLAGS += -fexceptions -frtti -Wno-unused-lambda-capture
 LOCAL_LDLIBS += -landroid
 
 # The dynamic libraries (.so files) that this module depends on.
-LOCAL_SHARED_LIBRARIES := libfolly_json libfb libfbjni libglog_init libyoga libreanimated
+LOCAL_SHARED_LIBRARIES := libfolly_json libfb libfbjni libglog_init libyoga
 
 # The static libraries (.a files) that this module depends on.
 LOCAL_STATIC_LIBRARIES := libreactnative libcallinvokerholder
@@ -70,6 +70,7 @@ $(call import-module,jsi)
 $(call import-module,jsiexecutor)
 $(call import-module,callinvoker)
 $(call import-module,hermes)
+$(call import-module,reanimated)
 
 ifeq ($(shell test $(REACT_NATIVE_TARGET_VERSION) -ge 64; echo $$?),0)
   $(call import-module,reactperflogger)
