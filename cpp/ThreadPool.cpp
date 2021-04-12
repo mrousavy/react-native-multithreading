@@ -25,7 +25,7 @@ namespace multithreading {
 // the constructor just launches some amount of workers
 ThreadPool::ThreadPool(size_t threads): stop(false) {
   for (size_t i = 0; i < threads; ++i) {
-    workers.emplace_back([this, i] {
+    workers.emplace_back([this] {
       while (true) {
         std::function<void()> task;
         

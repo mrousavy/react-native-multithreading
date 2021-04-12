@@ -18,7 +18,10 @@ include_directories(
         src/main/cpp/
         ../../react-native/React
         ../../react-native/React/Base
+        ../../react-native/ReactCommon
         ../../react-native/ReactCommon/jsi
+        ../../react-native/ReactCommon/callinvoker
+        ../../hermes-engine/android/include
         ../../react-native-reanimated/android/src/main/cpp/headers
         ../../react-native-reanimated/Common/cpp/headers
         ../../react-native-reanimated/Common/cpp/hidden_headers
