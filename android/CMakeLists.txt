@@ -3,20 +3,19 @@ cmake_minimum_required(VERSION 3.4.1)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 14)
 
-add_library(rnmultithreading
-            SHARED
-#            ../cpp/RNMultithreadingInstaller.cpp
-            cpp-adapter.cpp
-            ../cpp/RNMultithreadingInstaller.cpp
-            ../cpp/ThreadPool.cpp
-            ../../react-native/ReactCommon/jsi/jsi/jsi.cpp
-#            ../../react-native-reanimated/android/src/main/cpp/AndroidErrorHandler.cpp
-#            ../../react-native-reanimated/android/src/main/cpp/AndroidScheduler.cpp
+add_library(
+        rnmultithreading
+        SHARED
+        src/main/cpp/cpp-adapter.cpp
+        src/main/Common/ThreadPool.cpp
+        src/main/Common/RNMultithreadingInstaller.cpp
+        src/main/Common/MakeJSIRuntime.cpp
+        #../../react-native/ReactCommon/jsi/jsi/jsi.cpp
 )
 
 # Specifies a path to native header files.
 include_directories(
-        ../cpp
+        src/main/cpp/
         ../../react-native/React
         ../../react-native/React/Base
         ../../react-native/ReactCommon/jsi
@@ -28,6 +27,11 @@ include_directories(
 find_library(
         log-lib
         log
+)
+
+find_library(
+        rea-lib
+        rnreanimated
 )
 
 target_link_libraries(rnmultithreading
