@@ -17,9 +17,11 @@
 #elif __has_include(<v8runtime/V8RuntimeFactory.h>)
 // V8 (https://github.com/Kudo/react-native-v8)
 #include <v8runtime/V8RuntimeFactory.h>
-#else
+#elif __has_include(<jsi/JSCRuntime.h>)
 // JSC (default)
 #include <jsi/JSCRuntime.h>
+#else
+#error No jsi Runtime found!
 #endif
 
 using namespace facebook;
@@ -32,8 +34,10 @@ std::unique_ptr<jsi::Runtime> makeJSIRuntime() {
   return facebook::hermes::makeHermesRuntime();
 #elif __has_include(<v8runtime/V8RuntimeFactory.h>)
   return facebook::createV8Runtime("");
-#else
+#elif __has_include(<jsi/JSCRuntime.h>)
   return facebook::jsc::makeJSCRuntime();
+#else
+  return std::unique_ptr<jsi::Runtime>(null);
 #endif
 }
 
