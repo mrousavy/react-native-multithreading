@@ -7,8 +7,6 @@
 //
 
 #include "ThreadPool.h"
-#include "MakeJSIRuntime.h"
-#include <RNReanimated/RuntimeDecorator.h>
 #include <sstream>
 
 namespace mrousavy {
