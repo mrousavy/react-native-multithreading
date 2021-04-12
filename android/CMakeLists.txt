@@ -15,16 +15,17 @@ add_library(
 
 # Specifies a path to native header files.
 include_directories(
-        src/main/cpp/
         ../../react-native/React
         ../../react-native/React/Base
         ../../react-native/ReactCommon
         ../../react-native/ReactCommon/jsi
         ../../react-native/ReactCommon/callinvoker
         ../../hermes-engine/android/include
-        ../../react-native-reanimated/android/src/main/cpp/headers
         ../../react-native-reanimated/Common/cpp/headers
         ../../react-native-reanimated/Common/cpp/hidden_headers
+        ../../react-native-reanimated/android/src/main/cpp/headers
+        src/main/cpp
+        src/main/Common
 )
 
 find_library(
