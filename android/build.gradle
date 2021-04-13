@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 def getExtOrDefault(name, defaultValue) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : defaultValue
 }
@@ -35,7 +37,7 @@ android {
     }
   }
 
-  lintOptions {
+  lintOptions{
     abortOnError false
   }
 
@@ -58,4 +60,41 @@ repositories {
 dependencies {
   //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'
+  // implementation project(':react-native-reanimated')
 }
+
+task extractSo(type: Copy) {
+  // react-native
+  def rnAAR = fileTree("${rootDir}/../node_modules/react-native/android").matching({ it.include "**/**/*.aar" }).singleFile
+  def aarSo = zipTree(rnAAR).matching({ it.include "**/*.so" })
+  copy {
+    from(aarSo)
+    into("${rootDir}/native_prebuilt/rn")
+    includeEmptyDirs(false)
+  }
+
+  // jsc
+  def jscAAR = fileTree("${rootDir}/../node_modules/jsc-android/dist/org/webkit/android-jsc").matching({ it.include "**/**/*.aar" }).singleFile
+  def jscSo = zipTree(jscAAR).matching({ it.include "**/*.so" })
+  copy {
+    from(jscSo)
+    into("${rootDir}/native_prebuilt/jsc")
+    includeEmptyDirs(false)
+  }
+
+  // reanimated
+  def inputFile = new File(rootDir, '../node_modules/react-native/package.json')
+  def json = new JsonSlurper().parseText(inputFile.text)
+  def reactNativeVersion = json.version as String
+  def (major, minor, patch) = reactNativeVersion.tokenize('.')
+
+  def raAAR = "${rootDir}/../node_modules/react-native-reanimated/android/react-native-reanimated-${minor}.aar"
+  def raSo = zipTree(raAAR).matching({ it.include "**/*.so" })
+  copy {
+    from(raSo)
+    into("${rootDir}/native_prebuilt/reanimated")
+    includeEmptyDirs(false)
+  }
+
+}
+preBuild.dependsOn extractSo

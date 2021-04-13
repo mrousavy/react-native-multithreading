@@ -3,16 +3,6 @@ cmake_minimum_required(VERSION 3.4.1)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 14)
 
-aux_source_directory(src/main/cpp src)
-aux_source_directory(../cpp common_src)
-
-add_library(
-        rnmultithreading
-        STATIC
-        ${src}
-        ${common_src}
-)
-
 include_directories(
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/React"
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/React/Base"
@@ -26,6 +16,56 @@ include_directories(
         "../cpp"
 )
 
+add_library(
+        rnmultithreading
+        SHARED
+        src/main/cpp/cpp-adapter.cpp
+        ../cpp/MakeJSIRuntime.cpp
+        ../cpp/RNMultithreadingInstaller.cpp
+        ../cpp/ThreadPool.cpp
+)
+
+# reanimated shared
+
+add_library(
+        reanimated
+        SHARED
+        IMPORTED
+)
+set_target_properties(
+        reanimated
+        PROPERTIES IMPORTED_LOCATION
+        ${PREBUILT_DIR}/reanimated/jni/${ANDROID_ABI}/libreanimated.so
+)
+
+# jsc shared
+
+add_library(
+        jsc
+        SHARED
+        IMPORTED
+)
+set_target_properties(
+        jsc
+        PROPERTIES IMPORTED_LOCATION
+        ${PREBUILT_DIR}/jsc/jni/${ANDROID_ABI}/libjsc.so
+)
+
+# rn shared
+
+add_library(
+        rn
+        SHARED
+        IMPORTED
+)
+set_target_properties(
+        rn
+        PROPERTIES IMPORTED_LOCATION
+        ${PREBUILT_DIR}/rn/jni/${ANDROID_ABI}/libjscexecutor.so
+)
+
+# build shared lib
+
 find_library(
         log-lib
         log
@@ -33,6 +73,9 @@ find_library(
 
 target_link_libraries(
         rnmultithreading
+        reanimated
+        jsc
+        rn
         ${log-lib}
         android
 )
