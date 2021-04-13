@@ -2,7 +2,7 @@
 #include <jsi/jsi.h>
 #include <memory>
 
-#include "../Common/RNMultithreadingInstaller.h"
+#include "RNMultithreadingInstaller.h"
 
 #include "Scheduler.h"
 #include "ErrorHandler.h"
