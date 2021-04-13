@@ -60,7 +60,7 @@ repositories {
 dependencies {
   //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'
-  // implementation project(':react-native-reanimated')
+  api project(':react-native-reanimated')
 }
 
 task extractSo(type: Copy) {
