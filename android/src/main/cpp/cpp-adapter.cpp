@@ -9,9 +9,20 @@
 
 using namespace facebook;
 
+/*
+To create the Scheduler/AndroidErrorHandler:
+1.:     #include <fbjni/fbjni.h>
+2.:     class AndroidScheduler : public jni::HybridClass<AndroidScheduler>;
+3.:     jni::alias_ref<AndroidScheduler::javaobject> androidScheduler
+4.:     api project(":react-native-reanimated")
+*/
+
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(JNIEnv *env, jobject clazz, jlong jsiPtr) {
+Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(
+        JNIEnv *env,
+        jobject clazz,
+        jlong jsiPtr) {
     auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
 
     auto makeScheduler = []() -> std::shared_ptr<reanimated::Scheduler> {
