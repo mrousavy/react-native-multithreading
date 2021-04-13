@@ -10,8 +10,13 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
     System.loadLibrary("rnmultithreading");
   }
 
-  private native void nativeInstallMultithreading(long jsiPtr);
+  private static native void nativeInstallMultithreading(long jsiPtr);
 
+  public static void install(long jsiRuntimePointer) {
+    nativeInstallMultithreading(jsiRuntimePointer);
+  }
+
+  // Dummy so react native adds it to the Gradle Module System
   public MultithreadingModule(ReactApplicationContext context) {
     super(context);
   }
@@ -20,18 +25,5 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   @Override
   public String getName() {
     return "RNMultithreading";
-  }
-
-  @Override
-  public void initialize() {
-    super.initialize();
-
-    getReactApplicationContext().runOnJSQueueThread(new Runnable() {
-      @Override
-      public void run() {
-        nativeInstallMultithreading(getReactApplicationContext().getJavaScriptContextHolder().get());
-      }
-    });
-
   }
 }
