@@ -26,8 +26,12 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   public void initialize() {
     super.initialize();
 
-    nativeInstallMultithreading(
-            this.getReactApplicationContext().getJavaScriptContextHolder().get()
-    );
+    getReactApplicationContext().runOnJSQueueThread(new Runnable() {
+      @Override
+      public void run() {
+        nativeInstallMultithreading(getReactApplicationContext().getJavaScriptContextHolder().get());
+      }
+    });
+
   }
 }
