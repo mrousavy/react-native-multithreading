@@ -132,5 +132,5 @@ repositories {
 dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
-  runtimeOnly project(":react-native-reanimated")
+  api project(":react-native-reanimated")
 }
