@@ -21,7 +21,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(
         JNIEnv *env,
-        jobject clazz,
+        jclass clazz,
         jlong jsiPtr) {
     auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
 
