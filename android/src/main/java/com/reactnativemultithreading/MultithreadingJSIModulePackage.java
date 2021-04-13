@@ -13,7 +13,7 @@ public class MultithreadingJSIModulePackage extends ReanimatedJSIModulePackage {
         try {
             return super.getJSIModules(reactApplicationContext, jsContext);
         } finally {
-            MultithreadingModule.install(jsContext.get());
+            MultithreadingModule.install(reactApplicationContext, jsContext);
         }
     }
 }

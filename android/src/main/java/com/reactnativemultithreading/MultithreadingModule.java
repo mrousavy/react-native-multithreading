@@ -12,8 +12,8 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
 
   private static native void nativeInstallMultithreading(long jsiPtr);
 
-  public static void install(long jsiRuntimePointer) {
     nativeInstallMultithreading(jsiRuntimePointer);
+  public static void install(ReactApplicationContext context, JavaScriptContextHolder jsContext) {
   }
 
   // Dummy so react native adds it to the Gradle Module System
