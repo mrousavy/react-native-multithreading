@@ -3,15 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 14)
 
-aux_source_directory(src/main/cpp src)
 aux_source_directory(../cpp common_src)
-
-add_library(
-        rnmultithreading
-        STATIC
-        ${src}
-        ${common_src}
-)
 
 include_directories(
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/React"
@@ -26,6 +18,21 @@ include_directories(
         "../cpp"
 )
 
+add_library(
+        static_rnmultithreading
+        STATIC
+        src/main/cpp/cpp-adapter.cpp
+        ${common_src}
+)
+
+# dynamic
+
+add_library(
+        rnmultithreading
+        SHARED
+        src/main/cpp/dummy.c
+)
+
 find_library(
         log-lib
         log
@@ -34,5 +41,6 @@ find_library(
 target_link_libraries(
         rnmultithreading
         ${log-lib}
+        static_rnmultithreading
         android
 )
