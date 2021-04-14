@@ -18,6 +18,7 @@ include_directories(
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactCommon"
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactCommon/callinvoker"
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactCommon/jsi"
+        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/turbomodule/core/jni"
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/Tools"
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/SpecTools"
         "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/SharedItems"
