@@ -3,7 +3,6 @@
 #include <memory>
 #include <fbjni/fbjni.h>
 #include <ReactCommon/CallInvokerHolder.h>
-#include <react/jni/JavaScriptExecutorHolder.h>
 
 #include "RNMultithreadingInstaller.h"
 
