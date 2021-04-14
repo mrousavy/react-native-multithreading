@@ -35,7 +35,7 @@ add_library(
 set_target_properties(
         reanimated
         PROPERTIES IMPORTED_LOCATION
-        ${PREBUILT_DIR}/reanimated/jni/${ANDROID_ABI}/libreanimated.so
+        ${CMAKE_SOURCE_DIR}/ndk-deps/reanimated/jni/${ANDROID_ABI}/libreanimated.so
 )
 
 # jsc shared
@@ -48,7 +48,7 @@ add_library(
 set_target_properties(
         jsc
         PROPERTIES IMPORTED_LOCATION
-        ${PREBUILT_DIR}/jsc/jni/${ANDROID_ABI}/libjsc.so
+        ${CMAKE_SOURCE_DIR}/ndk-deps//jsc/jni/${ANDROID_ABI}/libjsc.so
 )
 
 # rn shared
@@ -61,7 +61,7 @@ add_library(
 set_target_properties(
         rn
         PROPERTIES IMPORTED_LOCATION
-        ${PREBUILT_DIR}/rn/jni/${ANDROID_ABI}/libjscexecutor.so
+        ${CMAKE_SOURCE_DIR}/ndk-deps/rn/jni/${ANDROID_ABI}/libjscexecutor.so
 )
 
 # build shared lib

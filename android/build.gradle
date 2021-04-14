@@ -32,7 +32,7 @@ android {
       cmake {
         cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
         abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-        arguments "-DRN_ANDROID_ROOT_DIR=" + rootDir, "-DPREBUILT_DIR=" + rootDir + "/native_prebuilt"
+        arguments "-DRN_ANDROID_ROOT_DIR=" + rootDir
       }
     }
   }
@@ -45,6 +45,11 @@ android {
     cmake {
       path "CMakeLists.txt"
     }
+  }
+
+  packagingOptions {
+    // remove shared libraries
+    excludes = ["**/libjsc.so", "**/libjscexecutor.so", "**/libreanimated.so"]
   }
 }
 
@@ -63,13 +68,14 @@ dependencies {
   //implementation project(':react-native-reanimated')
 }
 
+
 task extractSo(type: Copy) {
   // rn
   def rnAAR = fileTree("${rootDir}/../node_modules/react-native/android").matching({ it.include "**/**/*.aar" }).singleFile
   def aarSo = zipTree(rnAAR).matching({ it.include "**/*.so" })
   copy {
     from(aarSo)
-    into("${rootDir}/native_prebuilt/rn")
+    into("ndk-deps/rn")
     includeEmptyDirs(false)
   }
 
@@ -79,7 +85,7 @@ task extractSo(type: Copy) {
   def jscSo = zipTree(jscAAR).matching({ it.include "**/*.so" })
   copy {
     from(jscSo)
-    into("${rootDir}/native_prebuilt/jsc")
+    into("ndk-deps/jsc")
     includeEmptyDirs(false)
   }
 
@@ -94,7 +100,7 @@ task extractSo(type: Copy) {
   def raSo = zipTree(raAAR).matching({ it.include "**/*.so" })
   copy {
     from(raSo)
-    into("${rootDir}/native_prebuilt/reanimated")
+    into("ndk-deps/reanimated")
     includeEmptyDirs(false)
   }
 
