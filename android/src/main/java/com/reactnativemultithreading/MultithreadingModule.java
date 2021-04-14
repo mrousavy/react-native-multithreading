@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 
 public class MultithreadingModule extends ReactContextBaseJavaModule {
   static {
+    System.loadLibrary("reanimated");
     System.loadLibrary("rnmultithreading");
   }
 
