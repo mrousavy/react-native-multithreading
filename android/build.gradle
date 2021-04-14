@@ -32,7 +32,7 @@ android {
       cmake {
         cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
         abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-        arguments "-DRN_ANDROID_ROOT_DIR=" + rootDir, "-DPREBUILT_DIR=" + rootDir + "/native_prebuilt"
+        arguments '-DANDROID_STL=c++_shared', "-DRN_ANDROID_ROOT_DIR=" + rootDir
       }
     }
   }
@@ -45,6 +45,20 @@ android {
     cmake {
       path "CMakeLists.txt"
     }
+  }
+
+  packagingOptions {
+    // remove shared libraries
+    excludes = ["**/libjsc.so", "**/libjscexecutor.so", "**/libreanimated.so", "**/libc++_shared.so"]
+  }
+
+  buildFeatures {
+    prefab true
+  }
+
+  configurations {
+    extractHeaders
+    extractJNI
   }
 }
 
@@ -60,7 +74,9 @@ repositories {
 dependencies {
   //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'
-  api project(':react-native-reanimated')
+  implementation project(':react-native-reanimated')
+  extractHeaders("com.facebook.fbjni:fbjni:0.0.2:headers")
+  extractJNI("com.facebook.fbjni:fbjni:0.0.2")
 }
 
 task extractSo(type: Copy) {
@@ -69,7 +85,7 @@ task extractSo(type: Copy) {
   def aarSo = zipTree(rnAAR).matching({ it.include "**/*.so" })
   copy {
     from(aarSo)
-    into("${rootDir}/native_prebuilt/rn")
+    into("ndk-deps/rn")
     includeEmptyDirs(false)
   }
 
@@ -78,7 +94,7 @@ task extractSo(type: Copy) {
   def jscSo = zipTree(jscAAR).matching({ it.include "**/*.so" })
   copy {
     from(jscSo)
-    into("${rootDir}/native_prebuilt/jsc")
+    into("ndk-deps/jsc")
     includeEmptyDirs(false)
   }
 
@@ -92,9 +108,45 @@ task extractSo(type: Copy) {
   def raSo = zipTree(raAAR).matching({ it.include "**/*.so" })
   copy {
     from(raSo)
-    into("${rootDir}/native_prebuilt/reanimated")
+    into("ndk-deps/reanimated")
     includeEmptyDirs(false)
   }
 
 }
 preBuild.dependsOn extractSo
+
+// fbjni
+// https://github.com/facebookincubator/fbjni/blob/master/docs/android_setup.md
+
+task extractAARHeaders {
+  doLast {
+    configurations.extractHeaders.files.each {
+      def file = it.absoluteFile
+      copy {
+        from zipTree(file)
+        into "$buildDir/$file.name"
+        include "**/*.h"
+      }
+    }
+  }
+}
+
+task extractJNIFiles {
+  doLast {
+    configurations.extractJNI.files.each {
+      def file = it.absoluteFile
+      copy {
+        from zipTree(file)
+        into "$buildDir/$file.name"
+        include "jni/**/*"
+      }
+    }
+  }
+}
+
+tasks.whenTaskAdded { task ->
+  if (task.name.contains('externalNativeBuild')) {
+    task.dependsOn(extractAARHeaders)
+    task.dependsOn(extractJNIFiles)
+  }
+}

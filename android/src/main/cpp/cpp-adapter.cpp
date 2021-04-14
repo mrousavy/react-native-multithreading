@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <jsi/jsi.h>
 #include <memory>
+#include <fbjni/fbjni.h>
 
 #include "RNMultithreadingInstaller.h"
 
