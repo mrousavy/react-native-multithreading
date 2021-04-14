@@ -1,4 +1,5 @@
 package com.reactnativemultithreading;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactPackage;
@@ -8,7 +9,6 @@ import com.facebook.react.uimanager.ViewManager;
 
 import java.util.Collections;
 import java.util.List;
-
 
 public class MultithreadingPackage implements ReactPackage {
   @NonNull
