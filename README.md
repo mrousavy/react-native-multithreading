@@ -114,9 +114,17 @@ console.log(`Fibonacci Result: ${result}`)
 2. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
 3. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
 
-## License
+## Supported JS engines
 
-MIT
+* JavaScript Core (JSC)
+* [Hermes](http://hermesengine.dev)
+* [V8](http://github.com/Kudo/react-native-v8)
+
+## Performance
+
+Since the worklets are completely dispatched in an isolated thread, nothing interrupts their execution. This means, the JS engine can optimize the functions really well, making execution fast.
+
+Be aware that there always will be a small overhead when calling `spawnThread`, because all variables from outside have to be copied into the new thread first. For example, if you use the separate thread to do complex array operations, be aware that the array has to be copied into the separate thread first. Always benchmark the performance differences!
 
 ## Credits
 
