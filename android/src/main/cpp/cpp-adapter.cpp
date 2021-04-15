@@ -39,8 +39,8 @@ Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithread
     auto makeScheduler = [scheduler]() -> std::shared_ptr<reanimated::Scheduler> {
         return scheduler;
     };
-    auto makeErrorHandler = [scheduler](const std::shared_ptr<reanimated::Scheduler>& arg) -> std::shared_ptr<reanimated::ErrorHandler> {
-        return std::make_shared<reanimated::AndroidErrorHandler>(arg);
+    auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler_) -> std::shared_ptr<reanimated::ErrorHandler> {
+        return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
     };
     mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
 
