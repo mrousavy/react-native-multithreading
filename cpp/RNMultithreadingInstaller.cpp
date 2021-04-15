@@ -16,8 +16,6 @@
 #include "ErrorHandler.h"
 #endif
 
-#include "MakeJSIRuntime.h"
-
 namespace mrousavy {
 namespace multithreading {
 
@@ -28,11 +26,12 @@ static std::unique_ptr<reanimated::RuntimeManager> manager;
 //reanimated::RuntimeManager manager;
 
 void install(jsi::Runtime& runtime,
+             const std::function<std::unique_ptr<jsi::Runtime>()>& makeRuntime,
              const std::function<std::shared_ptr<reanimated::Scheduler>()>& makeScheduler,
              const std::function<std::shared_ptr<reanimated::ErrorHandler>(std::shared_ptr<reanimated::Scheduler>)>& makeErrorHandler) {
   // Quickly setup the runtime - this is executed in parallel, and _might_ introduce race conditions if spawnThread is called before this finishes.
-  auto setupFutureSingle = pool.enqueue([makeScheduler, makeErrorHandler]() {
-    auto runtime = makeJSIRuntime();
+  auto setupFutureSingle = pool.enqueue([makeScheduler, makeRuntime, makeErrorHandler]() {
+    auto runtime = makeRuntime();
     reanimated::RuntimeDecorator::decorateRuntime(*runtime, "CUSTOM_THREAD_1");
     auto scheduler = makeScheduler();
     auto errorHandler = makeErrorHandler(scheduler);
@@ -41,7 +40,7 @@ void install(jsi::Runtime& runtime,
                                                            scheduler);
   });
   auto setupFuture = std::make_shared<std::future<void>>(std::move(setupFutureSingle));
-  
+
   // spawnThread(run: () => T): Promise<T>
   auto spawnThread = jsi::Function::createFromHostFunction(runtime,
                                                            jsi::PropNameID::forAscii(runtime, "spawnThread"),
@@ -51,7 +50,7 @@ void install(jsi::Runtime& runtime,
       throw jsi::JSError(runtime, "spawnThread: First argument has to be a function!");
     if (setupFuture->valid())
       setupFuture->get(); // clears future, makes invalid
-    
+
     auto worklet = reanimated::ShareableValue::adapt(runtime, arguments[0], manager.get());
     
     auto spawnThreadCallback = jsi::Function::createFromHostFunction(runtime,
@@ -71,7 +70,7 @@ void install(jsi::Runtime& runtime,
           rejecterValue->asObject(runtime).asFunction(runtime).call(runtime, jsi::JSError(runtime, message).value());
         });
       };
-      
+
       pool.enqueue([resolver, rejecter, worklet]() {
         try {
           auto& runtime = *manager->runtime;

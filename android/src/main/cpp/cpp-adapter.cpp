@@ -3,6 +3,7 @@
 #include <memory>
 #include <fbjni/fbjni.h>
 #include <ReactCommon/CallInvokerHolder.h>
+#include <react/jni/JavaScriptExecutorHolder.h>
 
 #include "RNMultithreadingInstaller.h"
 
@@ -30,7 +31,8 @@ private:
     static void installNative(jni::alias_ref<JClass>,
                               jlong jsiRuntimePointer,
                               jni::alias_ref<facebook::react::CallInvokerHolder::javaobject> jsCallInvokerHolder,
-                              jni::alias_ref<AndroidScheduler::javaobject> androidScheduler) {
+                              jni::alias_ref<AndroidScheduler::javaobject> androidScheduler,
+                              react::JavaScriptExecutorHolder* javaScriptExecutor) {
 
         auto runtime = reinterpret_cast<jsi::Runtime*>(jsiRuntimePointer);
 
@@ -44,7 +46,17 @@ private:
         auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler_) -> std::shared_ptr<reanimated::ErrorHandler> {
             return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
         };
-        mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
+        auto makeJsExecutor = [javaScriptExecutor]() -> std::unique_ptr<jsi::Runtime> {
+            std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
+            std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
+            auto factory = javaScriptExecutor->getExecutorFactory();
+            auto executor = factory->createJSExecutor(delegate, jsQueue);
+            auto runtimePointer = static_cast<jsi::Runtime*>(executor->getJavaScriptContext());
+            std::unique_ptr<jsi::Runtime> runtime;
+            runtime.reset(runtimePointer);
+            return runtime;
+        };
+        mrousavy::multithreading::install(*runtime, makeJsExecutor, makeScheduler, makeErrorHandler);
 
     }
 };
