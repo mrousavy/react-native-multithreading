@@ -46,6 +46,8 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   }
 
 
+  // Called from the C++ code
+  @SuppressWarnings({"unused", "RedundantSuppression"})
   public static JavaScriptExecutor makeJSExecutor() {
     JavaScriptExecutorFactory factory = makeJSExecutorFactory();
     try {
