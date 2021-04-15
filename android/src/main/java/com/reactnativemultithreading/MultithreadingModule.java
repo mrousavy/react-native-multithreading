@@ -1,5 +1,6 @@
 package com.reactnativemultithreading;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
@@ -14,6 +15,7 @@ import com.facebook.react.turbomodule.core.interfaces.CallInvokerHolder;
 import com.facebook.soloader.SoLoader;
 import com.swmansion.reanimated.Scheduler;
 
+@Keep
 public class MultithreadingModule extends ReactContextBaseJavaModule {
   static {
     System.loadLibrary("reanimated");
@@ -42,6 +44,7 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   }
 
 
+  @Keep
   public static JavaScriptExecutor makeJSExecutor() {
     JavaScriptExecutorFactory factory = makeJSExecutorFactory();
     try {
