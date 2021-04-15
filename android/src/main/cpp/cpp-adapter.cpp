@@ -30,7 +30,7 @@ public:
 
 private:
     static std::shared_ptr<react::JSExecutorFactory> makeJSExecutorFactory() {
-        ThreadScope scope; // JNI needs to attach this thread as makeJSExecutorFactory is being called from a different Thread
+        ThreadScope scope; // JNI needs to attach this thread because this function is being called from a different Thread
 
         __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "Calling Java method MultithreadingModule.makeJSExecutor()...");
         static const auto cls = javaClassStatic();
