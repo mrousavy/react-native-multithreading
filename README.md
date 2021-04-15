@@ -102,7 +102,7 @@ console.log(`Fibonacci Result: ${result}`)
 
 * You can run any JavaScript code you want in there.
 * You can use variables from "outside" (e.g. state), but those will be immutable/frozen.
-* You can use functions from "outside". 
+* You can use functions from "outside".
    - Worklets (functions with the `'worklet'` directive) can be called synchronously
    - Normal JS functions (e.g. setState) can be called with `runOnJS`
    - Native JSI functions ("host functions") can be called synchronously (e.g. functions from [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv#usage))
@@ -121,6 +121,10 @@ MIT
 ## Credits
 
 * [react-native-reanimated](http://github.com/software-mansion/react-native-reanimated) for Shared Value adapting, essentially allowing JSI multithreading
+* [**@karol-bisztyga**](https://github.com/karol-bisztyga) and [**@piaskowyk**](https://github.com/piaskowyk) for helping me understand a few parts of Reanimated better
+* [**@Szymon20000**](https://github.com/Szymon20000) for taking time to review and merge my Reanimated PRs
+* [JNI tips](https://developer.android.com/training/articles/perf-jni) and [fbjni](https://github.com/facebookincubator/fbjni) to make Android JNI interop easier
+* [**@iamyellow**](https://github.com/iamyellow) for being a huge help on the Android side
 * [Erik the Coder](https://www.erikthecoder.net/2019/03/30/async-does-not-imply-concurrent/) for the Icon
 * You, for appreciating my work
 
