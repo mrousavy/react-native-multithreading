@@ -2,30 +2,10 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_FLAGS "-DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_HAVE_MEMRCHR=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_MOBILE=1")
+
 set (PACKAGE_NAME "rnmultithreading")
-set (build_DIR ${CMAKE_SOURCE_DIR}/build)
-
-# fbjni
-
-file (GLOB libfbjni_link_DIRS "${build_DIR}/fbjni*.aar/jni/${ANDROID_ABI}")
-file (GLOB libfbjni_include_DIRS "${build_DIR}/fbjni-*-headers.jar/")
-
-# includes
-
-include_directories(
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/React"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/React/Base"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactCommon"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactCommon/callinvoker"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native/ReactCommon/jsi"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/Tools"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/SpecTools"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/SharedItems"
-        "${RN_ANDROID_ROOT_DIR}/../node_modules/react-native-reanimated/Common/cpp/headers/Registries"
-        "../cpp"
-)
-
-# rnmultithreading shared
+set (BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
 
 add_library(
         ${PACKAGE_NAME}
@@ -36,71 +16,77 @@ add_library(
         ../cpp/ThreadPool.cpp
 )
 
-# reanimated shared
+# includes
 
-add_library(
-        reanimated
-        SHARED
-        IMPORTED
-)
-set_target_properties(
-        reanimated
-        PROPERTIES IMPORTED_LOCATION
-        ${CMAKE_SOURCE_DIR}/ndk-deps/reanimated/jni/${ANDROID_ABI}/libreanimated.so
-)
+file (GLOB LIBFBJNI_INCLUDE_DIR "${BUILD_DIR}/fbjni-*-headers.jar/")
 
-# jsc shared
-
-add_library(
-        jsc
-        SHARED
-        IMPORTED
-)
-set_target_properties(
-        jsc
-        PROPERTIES IMPORTED_LOCATION
-        ${CMAKE_SOURCE_DIR}/ndk-deps//jsc/jni/${ANDROID_ABI}/libjsc.so
-)
-
-# rn shared
-
-add_library(
-        rn
-        SHARED
-        IMPORTED
-)
-set_target_properties(
-        rn
-        PROPERTIES IMPORTED_LOCATION
-        ${CMAKE_SOURCE_DIR}/ndk-deps/rn/jni/${ANDROID_ABI}/libjscexecutor.so
+target_include_directories(
+        ${PACKAGE_NAME}
+        PRIVATE
+        ${LIBFBJNI_INCLUDE_DIR}
+        ${BUILD_DIR}/third-party-ndk/boost
+        ${BUILD_DIR}/third-party-ndk/double-conversion
+        ${BUILD_DIR}/third-party-ndk/folly
+        ${BUILD_DIR}/third-party-ndk/glog
+        "${NODE_MODULES_DIR}/react-native/React"
+        "${NODE_MODULES_DIR}/react-native/React/Base"
+        "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/jni"
+        "${NODE_MODULES_DIR}/react-native/ReactCommon"
+        "${NODE_MODULES_DIR}/react-native/ReactCommon/callinvoker"
+        "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi"
+        "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/Tools"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/SpecTools"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/SharedItems"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/Registries"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/hidden_headers"
+        "../cpp"
 )
 
-# find packages
+# find libraries
+
+file (GLOB LIBRN_DIR "${BUILD_DIR}/react-native-0*/jni/${ANDROID_ABI}")
+file (GLOB LIBJSC_DIR "${BUILD_DIR}/android-jsc*.aar/jni/${ANDROID_ABI}")
+file (GLOB LIBREANIMATED_DIR "${BUILD_DIR}/react-native-reanimated-*.aar/jni/${ANDROID_ABI}")
+
 
 find_library(
-        log-lib
+        LOG_LIB
         log
 )
-
 find_library(
-        FBJNI_LIBRARY fbjni
-        PATHS ${libfbjni_link_DIRS}
+        FBJNI_LIB
+        fbjni
+        PATHS ${LIBRN_DIR}
+        NO_CMAKE_FIND_ROOT_PATH
+)
+find_library(
+        JSEXECUTOR_LIB
+        jscexecutor
+        PATHS ${LIBRN_DIR}
+        NO_CMAKE_FIND_ROOT_PATH
+)
+find_library(
+        JSC_LIB
+        jsc
+        PATHS ${LIBJSC_DIR}
+        NO_CMAKE_FIND_ROOT_PATH
+)
+find_library(
+        REANIMATED_LIB
+        reanimated
+        PATHS ${LIBREANIMATED_DIR}
         NO_CMAKE_FIND_ROOT_PATH
 )
 
-# build shared lib
-
-target_include_directories(
-        ${PACKAGE_NAME} PRIVATE
-        ${libfbjni_include_DIRS}
-)
+# linking
 
 target_link_libraries(
         ${PACKAGE_NAME}
-        reanimated
-        jsc
-        rn
-        ${FBJNI_LIBRARY}
-        ${log-lib}
+        ${LOG_LIB}
+        ${REANIMATED_LIB}
+        ${JSC_LIB}
+        ${JSEXECUTOR_LIB}
+        ${FBJNI_LIB}
         android
 )

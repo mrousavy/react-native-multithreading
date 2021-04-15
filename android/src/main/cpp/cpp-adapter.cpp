@@ -8,6 +8,9 @@
 #include "Scheduler.h"
 #include "ErrorHandler.h"
 
+#include "AndroidErrorHandler.h"
+#include "AndroidScheduler.h"
+
 using namespace facebook;
 
 /*
