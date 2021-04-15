@@ -4,6 +4,7 @@
 #include <fbjni/fbjni.h>
 #include <ReactCommon/CallInvokerHolder.h>
 #include <react/jni/JavaScriptExecutorHolder.h>
+#include <android/log.h>
 
 #include "RNMultithreadingInstaller.h"
 
@@ -28,11 +29,20 @@ public:
     }
 
 private:
+    static std::shared_ptr<react::JSExecutorFactory> makeJSExecutorFactory() {
+        ThreadScope scope; // JNI needs to attach this thread as makeJSExecutorFactory is being called from a different Thread
+
+        __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "Calling Java method MultithreadingModule.makeJSExecutor()...");
+        static const auto cls = javaClassStatic();
+        static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder*()>("makeJSExecutor");
+        auto result = method(cls);
+        return result->cthis()->getExecutorFactory();
+    }
+
     static void installNative(jni::alias_ref<JClass>,
                               jlong jsiRuntimePointer,
                               jni::alias_ref<facebook::react::CallInvokerHolder::javaobject> jsCallInvokerHolder,
-                              jni::alias_ref<AndroidScheduler::javaobject> androidScheduler,
-                              react::JavaScriptExecutorHolder* javaScriptExecutor) {
+                              jni::alias_ref<AndroidScheduler::javaobject> androidScheduler) {
 
         auto runtime = reinterpret_cast<jsi::Runtime*>(jsiRuntimePointer);
 
@@ -46,12 +56,14 @@ private:
         auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler_) -> std::shared_ptr<reanimated::ErrorHandler> {
             return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
         };
-        auto makeJsExecutor = [javaScriptExecutor]() -> std::unique_ptr<jsi::Runtime> {
+        auto makeJsExecutor = []() -> std::unique_ptr<jsi::Runtime> {
+            __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "Creating JSExecutor..");
             std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
             std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
-            auto factory = javaScriptExecutor->getExecutorFactory();
-            auto executor = factory->createJSExecutor(delegate, jsQueue);
+            auto jsExecutorFactory = makeJSExecutorFactory();
+            auto executor = jsExecutorFactory->createJSExecutor(delegate, jsQueue);
             auto runtimePointer = static_cast<jsi::Runtime*>(executor->getJavaScriptContext());
+            __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "JSExecutor created!");
             std::unique_ptr<jsi::Runtime> runtime;
             runtime.reset(runtimePointer);
             return runtime;

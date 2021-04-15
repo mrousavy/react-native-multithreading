@@ -33,27 +33,28 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
 
   private static native void installNative(long jsiRuntimePointer,
                                            CallInvokerHolderImpl jsCallInvokerHolder,
-                                           Scheduler scheduler,
-                                           JavaScriptExecutor jsExecutor);
+                                           Scheduler scheduler);
 
   public static void install(ReactApplicationContext context, JavaScriptContextHolder jsContext) {
     CallInvokerHolderImpl holder = (CallInvokerHolderImpl) context.getCatalystInstance().getJSCallInvokerHolder();
-    JavaScriptExecutor jsExecutor = null;
-    try {
-      jsExecutor = makeJSExecutorFactory(context).create();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    installNative(jsContext.get(), holder, new Scheduler(context), jsExecutor);
+    SoLoader.init(context, false); // <-- required for makeJSExecutorFactory later on
+    installNative(jsContext.get(), holder, new Scheduler(context));
   }
 
 
-  // method from React native
-  public static JavaScriptExecutorFactory makeJSExecutorFactory(ReactApplicationContext context) {
+  public static JavaScriptExecutor makeJSExecutor() {
+    JavaScriptExecutorFactory factory = makeJSExecutorFactory();
     try {
-      // If JSC is included, use it as normal
-      SoLoader.init(context, /* native exopackage */ false);
+      return factory.create();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  // method from React native
+  public static JavaScriptExecutorFactory makeJSExecutorFactory() {
+    try {
       SoLoader.loadLibrary("jscexecutor");
       return new JSCExecutorFactory("Multithreading", "Multithreading");
     } catch (UnsatisfiedLinkError jscE) {
