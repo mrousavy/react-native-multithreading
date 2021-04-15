@@ -4,6 +4,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.JavaScriptContextHolder;
 import com.facebook.react.bridge.JavaScriptExecutor;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
@@ -16,6 +17,7 @@ import com.facebook.soloader.SoLoader;
 import com.swmansion.reanimated.Scheduler;
 
 @Keep
+@DoNotStrip
 public class MultithreadingModule extends ReactContextBaseJavaModule {
   static {
     System.loadLibrary("reanimated");
@@ -44,7 +46,6 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   }
 
 
-  @Keep
   public static JavaScriptExecutor makeJSExecutor() {
     JavaScriptExecutorFactory factory = makeJSExecutorFactory();
     try {
