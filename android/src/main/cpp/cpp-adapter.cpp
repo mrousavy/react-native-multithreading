@@ -2,16 +2,16 @@
 #include <jsi/jsi.h>
 #include <memory>
 #include <fbjni/fbjni.h>
+#include <ReactCommon/CallInvokerHolder.h>
 
 #include "RNMultithreadingInstaller.h"
 
 #include "Scheduler.h"
-#include "ErrorHandler.h"
-
 #include "AndroidErrorHandler.h"
 #include "AndroidScheduler.h"
 
 using namespace facebook;
+using namespace reanimated;
 
 /*
 To create the Scheduler/AndroidErrorHandler:
@@ -26,29 +26,22 @@ JNIEXPORT void JNICALL
 Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(
         JNIEnv *env,
         jclass clazz,
-        jlong jsiPtr) {
+        jlong jsiPtr,
+        jni::alias_ref<facebook::react::CallInvokerHolder::javaobject> jsCallInvokerHolder,
+        jni::alias_ref<AndroidScheduler::javaobject> androidScheduler) {
+
     auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
 
-    auto makeScheduler = []() -> std::shared_ptr<reanimated::Scheduler> {
-        return std::shared_ptr<reanimated::Scheduler>();
+    auto jsCallInvoker = jsCallInvokerHolder->cthis()->getCallInvoker();
+    auto scheduler = androidScheduler->cthis()->getScheduler();
+    scheduler->setJSCallInvoker(jsCallInvoker);
+
+    auto makeScheduler = [scheduler]() -> std::shared_ptr<reanimated::Scheduler> {
+        return scheduler;
     };
-    auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler) -> std::shared_ptr<reanimated::ErrorHandler> {
-        return std::shared_ptr<reanimated::ErrorHandler>();
+    auto makeErrorHandler = [scheduler](const std::shared_ptr<reanimated::Scheduler>& arg) -> std::shared_ptr<reanimated::ErrorHandler> {
+        return std::make_shared<reanimated::AndroidErrorHandler>(arg);
     };
     mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
-/*
 
-    // TODO: Implement multithreading for Android.
-    //  The only problem I have with this is that I cannot really import/include the Reanimated library since that is a prebuilt .aar.
-    //  That means, I cannot import it's headers, I cannot link it, and I cannot create instances of ShareableValue, AndroidErrorHandler, AndroidScheduler, ...
-    runtime->global().setProperty(*runtime,
-            "spawnThread",
-            jsi::Function::createFromHostFunction(*runtime,
-                    jsi::PropNameID::forAscii(*runtime, "spawnThread"),
-                    1,
-                    [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-                auto promise = runtime.global().getProperty(runtime, "Promise").asObject(runtime);
-                auto rejecter = promise.getProperty(runtime, "reject");
-                return rejecter.asObject(runtime).asFunction(runtime).call(runtime, jsi::JSError(runtime, "Multithreading is not yet supported on Android.").value());
-    }));*/
 }

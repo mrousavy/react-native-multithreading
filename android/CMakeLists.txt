@@ -7,6 +7,8 @@ set (CMAKE_CXX_FLAGS "-DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_H
 set (PACKAGE_NAME "rnmultithreading")
 set (BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
 
+# rnmultithreading shared
+
 add_library(
         ${PACKAGE_NAME}
         SHARED
@@ -31,6 +33,7 @@ target_include_directories(
         "${NODE_MODULES_DIR}/react-native/React"
         "${NODE_MODULES_DIR}/react-native/React/Base"
         "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/jni"
+        "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/java/com/facebook/react/turbomodule/core/jni"
         "${NODE_MODULES_DIR}/react-native/ReactCommon"
         "${NODE_MODULES_DIR}/react-native/ReactCommon/callinvoker"
         "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi"
@@ -80,6 +83,14 @@ find_library(
 )
 
 # linking
+
+find_library(
+        FBJNI_LIBRARY fbjni
+        PATHS ${libfbjni_link_DIRS}
+        NO_CMAKE_FIND_ROOT_PATH
+)
+
+# build shared lib
 
 target_link_libraries(
         ${PACKAGE_NAME}

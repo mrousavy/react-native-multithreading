@@ -36,9 +36,9 @@ android {
 
     externalNativeBuild {
       cmake {
-        cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
+        cppFlags "-fexceptions", "-frtti", "-std=c++1y", "-DONANDROID"
         abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-        arguments "-DNODE_MODULES_DIR=${rootDir}/../node_modules"
+        arguments '-DANDROID_STL=c++_shared', "-DNODE_MODULES_DIR=${rootDir}/../node_modules"
       }
     }
   }
@@ -54,7 +54,7 @@ android {
   }
 
   packagingOptions {
-    // excludes = ["**/libc++_shared.so"]
+    excludes = ["**/libc++_shared.so"]
   }
 
   buildFeatures {
