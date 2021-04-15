@@ -23,9 +23,9 @@ public:
 
     static void registerNatives() {
         javaClassStatic()->registerNatives({
-            makeNativeMethod("installNative",
-                             MultithreadingModule::installNative)
-        });
+                                                   makeNativeMethod("installNative",
+                                                                    MultithreadingModule::installNative)
+                                           });
     }
 
 private:
@@ -34,7 +34,7 @@ private:
 
         __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "Calling Java method MultithreadingModule.makeJSExecutor()...");
         static const auto cls = javaClassStatic();
-        static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder*()>("makeJSExecutor");
+        static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder()>("makeJSExecutor");
         auto result = method(cls);
         return result->cthis()->getExecutorFactory();
     }
