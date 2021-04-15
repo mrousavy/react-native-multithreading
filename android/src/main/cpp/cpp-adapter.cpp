@@ -7,10 +7,11 @@
 #include "RNMultithreadingInstaller.h"
 
 #include "Scheduler.h"
-#include "ErrorHandler.h"
+#include "AndroidErrorHandler.h"
 #include "AndroidScheduler.h"
 
 using namespace facebook;
+using namespace reanimated;
 
 /*
 To create the Scheduler/AndroidErrorHandler:
@@ -38,8 +39,8 @@ Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithread
     auto makeScheduler = [scheduler]() -> std::shared_ptr<reanimated::Scheduler> {
         return scheduler;
     };
-    auto makeErrorHandler = [scheduler](const std::shared_ptr<reanimated::Scheduler>& scheduler) -> std::shared_ptr<reanimated::ErrorHandler> {
-        return std::make_shared<reanimated::AndroidErrorHandler>(scheduler);
+    auto makeErrorHandler = [scheduler](const std::shared_ptr<reanimated::Scheduler>& arg) -> std::shared_ptr<reanimated::ErrorHandler> {
+        return std::make_shared<reanimated::AndroidErrorHandler>(arg);
     };
     mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
 

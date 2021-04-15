@@ -1,5 +1,4 @@
 // copied from https://github.com/software-mansion/react-native-reanimated/blob/master/android/src/main/cpp/headers/AndroidScheduler.h
-// TODO: Can I extract it from reanimated.aar instead?
 
 #pragma once
 
