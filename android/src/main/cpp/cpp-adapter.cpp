@@ -13,6 +13,47 @@
 using namespace facebook;
 using namespace reanimated;
 
+
+struct MultithreadingModule : jni::JavaClass<MultithreadingModule> {
+public:
+    __unused static constexpr auto kJavaDescriptor = "Lcom/reactnativemultithreading/MultithreadingModule;";
+
+
+    static void registerNatives() {
+        javaClassStatic()->registerNatives({
+            makeNativeMethod("installNative",
+                             MultithreadingModule::installNative)
+        });
+    }
+
+private:
+    static void installNative(jni::alias_ref<JClass>,
+                              jlong jsiRuntimePointer,
+                              jni::alias_ref<facebook::react::CallInvokerHolder::javaobject> jsCallInvokerHolder,
+                              jni::alias_ref<AndroidScheduler::javaobject> androidScheduler) {
+
+        auto runtime = reinterpret_cast<jsi::Runtime*>(jsiRuntimePointer);
+
+        auto jsCallInvoker = jsCallInvokerHolder->cthis()->getCallInvoker();
+        auto scheduler = androidScheduler->cthis()->getScheduler();
+        scheduler->setJSCallInvoker(jsCallInvoker);
+
+        auto makeScheduler = [scheduler]() -> std::shared_ptr<reanimated::Scheduler> {
+            return scheduler;
+        };
+        auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler_) -> std::shared_ptr<reanimated::ErrorHandler> {
+            return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
+        };
+        mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
+
+    }
+};
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *) {
+    return facebook::jni::initialize(vm, [] {
+        MultithreadingModule::registerNatives();
+    });
+}
 /*
 To create the Scheduler/AndroidErrorHandler:
 1.:     #include <fbjni/fbjni.h>
@@ -20,28 +61,3 @@ To create the Scheduler/AndroidErrorHandler:
 3.:     jni::alias_ref<AndroidScheduler::javaobject> androidScheduler
 4.:     api project(":react-native-reanimated")
 */
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_reactnativemultithreading_MultithreadingModule_nativeInstallMultithreading(
-        JNIEnv *env,
-        jclass clazz,
-        jlong jsiPtr,
-        jni::alias_ref<facebook::react::CallInvokerHolder::javaobject> jsCallInvokerHolder,
-        jni::alias_ref<AndroidScheduler::javaobject> androidScheduler) {
-
-    auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
-
-    auto jsCallInvoker = jsCallInvokerHolder->cthis()->getCallInvoker();
-    auto scheduler = androidScheduler->cthis()->getScheduler();
-    scheduler->setJSCallInvoker(jsCallInvoker);
-
-    auto makeScheduler = [scheduler]() -> std::shared_ptr<reanimated::Scheduler> {
-        return scheduler;
-    };
-    auto makeErrorHandler = [](const std::shared_ptr<reanimated::Scheduler>& scheduler_) -> std::shared_ptr<reanimated::ErrorHandler> {
-        return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
-    };
-    mrousavy::multithreading::install(*runtime, makeScheduler, makeErrorHandler);
-
-}

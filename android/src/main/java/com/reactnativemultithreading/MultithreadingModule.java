@@ -6,6 +6,7 @@ import com.facebook.react.bridge.JavaScriptContextHolder;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.turbomodule.core.CallInvokerHolderImpl;
+import com.facebook.react.turbomodule.core.interfaces.CallInvokerHolder;
 import com.swmansion.reanimated.Scheduler;
 
 public class MultithreadingModule extends ReactContextBaseJavaModule {
@@ -14,13 +15,13 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
     System.loadLibrary("rnmultithreading");
   }
 
-  private static native void nativeInstallMultithreading(long jsiPtr,
-                                                         CallInvokerHolderImpl jsCallInvokerHolder,
-                                                         Scheduler scheduler);
+  private static native void installNative(long jsiRuntimePointer,
+                                           CallInvokerHolderImpl jsCallInvokerHolder,
+                                           Scheduler scheduler);
 
   public static void install(ReactApplicationContext context, JavaScriptContextHolder jsContext) {
     CallInvokerHolderImpl holder = (CallInvokerHolderImpl) context.getCatalystInstance().getJSCallInvokerHolder();
-    nativeInstallMultithreading(jsContext.get(), holder, new Scheduler(context));
+    installNative(jsContext.get(), holder, new Scheduler(context));
   }
 
   // Dummy so react native adds it to the Gradle Module System
