@@ -13,15 +13,18 @@ rm -rf android-npm/
 cd android
 rm -rf build/
 
+# Build .aar files
 ./gradlew clean
 ./gradlew assembleDebug assembleRelease
 
 rm -rf ../android-npm
 mkdir ../android-npm
 
+# Move over the .aar files
 shopt -s dotglob nullglob
 mv -v build/outputs/aar/* ../android-npm
 
+# Move over the build.gradle file
 cd $CWD
 cd ..
 cd scripts
