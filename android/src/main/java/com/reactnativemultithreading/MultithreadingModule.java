@@ -1,5 +1,7 @@
 package com.reactnativemultithreading;
 
+import android.util.Log;
+
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
@@ -24,6 +26,8 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
     System.loadLibrary("rnmultithreading");
   }
 
+  static String TAG = "RNMultithreading";
+
   // Dummy so react native adds it to the Gradle Module System
   public MultithreadingModule(ReactApplicationContext context) {
     super(context);
@@ -32,7 +36,7 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   @NonNull
   @Override
   public String getName() {
-    return "RNMultithreading";
+    return TAG;
   }
 
   private static native void installNative(long jsiRuntimePointer,
@@ -49,10 +53,13 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   // Called from the C++ code
   @SuppressWarnings({"unused", "RedundantSuppression"})
   public static JavaScriptExecutor makeJSExecutor() {
+    Log.i(TAG, "Creating JavaScriptExecutorFactory...");
     JavaScriptExecutorFactory factory = makeJSExecutorFactory();
     try {
+      Log.i(TAG, "Factory created! Creating JavaScriptExecutor...");
       return factory.create();
     } catch (Exception e) {
+      Log.e(TAG, "Failed to create JavaScriptExecutor!");
       e.printStackTrace();
       return null;
     }
@@ -61,6 +68,7 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
   // method from React native
   public static JavaScriptExecutorFactory makeJSExecutorFactory() {
     try {
+      Log.i(TAG, "Trying to create JSC Factory...");
       SoLoader.loadLibrary("jscexecutor");
       return new JSCExecutorFactory("Multithreading", "Multithreading");
     } catch (UnsatisfiedLinkError jscE) {
@@ -79,6 +87,7 @@ public class MultithreadingModule extends ReactContextBaseJavaModule {
 
       // Otherwise use Hermes
       try {
+        Log.i(TAG, "Trying to create Hermes Factory...");
         return new HermesExecutorFactory();
       } catch (UnsatisfiedLinkError hermesE) {
         // If we get here, either this is a JSC build, and of course

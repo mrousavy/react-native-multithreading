@@ -20,6 +20,7 @@ struct MultithreadingModule : jni::JavaClass<MultithreadingModule> {
 public:
     __unused static constexpr auto kJavaDescriptor = "Lcom/reactnativemultithreading/MultithreadingModule;";
 
+    static constexpr auto TAG = "RNMultithreading";
 
     static void registerNatives() {
         javaClassStatic()->registerNatives({
@@ -32,10 +33,11 @@ private:
     static std::shared_ptr<react::JSExecutorFactory> makeJSExecutorFactory() {
         ThreadScope scope; // JNI needs to attach this thread because this function is being called from a different Thread
 
-        __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "Calling Java method MultithreadingModule.makeJSExecutor()...");
+        __android_log_write(ANDROID_LOG_INFO, TAG, "Calling Java method MultithreadingModule.makeJSExecutor()...");
         static const auto cls = javaClassStatic();
         static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder()>("makeJSExecutor");
         auto result = method(cls);
+        __android_log_write(ANDROID_LOG_INFO, TAG, "JavaScriptExecutor created! Getting factory...");
         return result->cthis()->getExecutorFactory();
     }
 
@@ -57,16 +59,22 @@ private:
             return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
         };
         auto makeJsExecutor = []() -> std::unique_ptr<jsi::Runtime> {
-            __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "Creating JSExecutor..");
-            std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
-            std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
-            auto jsExecutorFactory = makeJSExecutorFactory();
-            auto executor = jsExecutorFactory->createJSExecutor(delegate, jsQueue);
-            auto runtimePointer = static_cast<jsi::Runtime*>(executor->getJavaScriptContext());
-            __android_log_write(ANDROID_LOG_DEBUG, "RNMultithreading", "JSExecutor created!");
-            std::unique_ptr<jsi::Runtime> runtime;
-            runtime.reset(runtimePointer);
-            return runtime;
+            __android_log_write(ANDROID_LOG_DEBUG, TAG, "Creating JSExecutorFactory..");
+            try {
+                std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
+                std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
+                auto jsExecutorFactory = makeJSExecutorFactory();
+              __android_log_write(ANDROID_LOG_DEBUG, TAG, "Creating JSExecutor..");
+                auto executor = jsExecutorFactory->createJSExecutor(delegate,
+                                                                    jsQueue);
+                auto runtimePointer = static_cast<jsi::Runtime *>(executor->getJavaScriptContext());
+                __android_log_write(ANDROID_LOG_DEBUG, TAG, "JSExecutor created!");
+                return std::unique_ptr<jsi::Runtime>(runtimePointer);
+            } catch (std::exception& exc) {
+                __android_log_write(ANDROID_LOG_ERROR, TAG, "Failed to create JSExecutor!");
+                __android_log_write(ANDROID_LOG_ERROR, TAG, exc.what());
+                return std::unique_ptr<jsi::Runtime>(); // TODO: Remove this and let the caller handle the exception.
+            }
         };
         mrousavy::multithreading::install(*runtime, makeJsExecutor, makeScheduler, makeErrorHandler);
 
