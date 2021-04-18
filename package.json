@@ -1,6 +1,6 @@
 {
   "name": "react-native-multithreading",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "🧵 Fast and easy multithreading for React Native using JSI",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
