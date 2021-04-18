@@ -31,22 +31,12 @@ public:
 
 private:
   static std::shared_ptr<react::JSExecutorFactory> makeJSExecutorFactory() {
-    std::shared_ptr<react::JSExecutorFactory> factory;
-
-    ThreadScope::WithClassLoader([&factory]() {
-      __android_log_write(ANDROID_LOG_INFO, TAG, "Calling Java method MultithreadingModule.makeJSExecutor()...");
-      static const auto cls = javaClassStatic();
-      static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder()>("makeJSExecutor");
-      auto result = method(cls);
-      __android_log_write(ANDROID_LOG_INFO, TAG, "JavaScriptExecutor created! Getting factory...");
-      auto cxxInstance = result->cthis()->getExecutorFactory();
-      factory = cxxInstance;
-    });
-    if (factory == nullptr) {
-      throw std::runtime_error("Failed to create the JSExecutorFactory! shared_ptr was null.");
-    }
-
-    return factory;
+    __android_log_write(ANDROID_LOG_INFO, TAG, "Calling Java method MultithreadingModule.makeJSExecutor()...");
+    static const auto cls = javaClassStatic();
+    static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder()>("makeJSExecutor");
+    auto result = method(cls);
+    __android_log_write(ANDROID_LOG_INFO, TAG, "JavaScriptExecutor created! Getting factory...");
+    return result->cthis()->getExecutorFactory();
   }
 
   static void installNative(jni::alias_ref<JClass>,
@@ -69,9 +59,6 @@ private:
     auto makeJsExecutor = []() -> std::unique_ptr<jsi::Runtime> {
       __android_log_write(ANDROID_LOG_INFO, TAG, "Creating JSExecutorFactory..");
       try {
-        // JNI needs to attach this thread because this function is being called from a different Thread
-        __unused ThreadScope scope; // RAII
-
         std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
         std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
 
