@@ -31,14 +31,22 @@ public:
 
 private:
   static std::shared_ptr<react::JSExecutorFactory> makeJSExecutorFactory() {
-    ThreadScope scope; // JNI needs to attach this thread because this function is being called from a different Thread
+    std::shared_ptr<react::JSExecutorFactory> factory;
 
-    __android_log_write(ANDROID_LOG_INFO, TAG, "Calling Java method MultithreadingModule.makeJSExecutor()...");
-    static const auto cls = javaClassStatic();
-    static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder()>("makeJSExecutor");
-    auto result = method(cls);
-    __android_log_write(ANDROID_LOG_INFO, TAG, "JavaScriptExecutor created! Getting factory...");
-    return result->cthis()->getExecutorFactory();
+    ThreadScope::WithClassLoader([&factory]() {
+      __android_log_write(ANDROID_LOG_INFO, TAG, "Calling Java method MultithreadingModule.makeJSExecutor()...");
+      static const auto cls = javaClassStatic();
+      static const auto method = cls->getStaticMethod<react::JavaScriptExecutorHolder()>("makeJSExecutor");
+      auto result = method(cls);
+      __android_log_write(ANDROID_LOG_INFO, TAG, "JavaScriptExecutor created! Getting factory...");
+      auto cxxInstance = result->cthis()->getExecutorFactory();
+      factory = cxxInstance;
+    });
+    if (factory == nullptr) {
+      throw std::runtime_error("Failed to create the JSExecutorFactory! shared_ptr was null.");
+    }
+
+    return factory;
   }
 
   static void installNative(jni::alias_ref<JClass>,
@@ -61,6 +69,9 @@ private:
     auto makeJsExecutor = []() -> std::unique_ptr<jsi::Runtime> {
       __android_log_write(ANDROID_LOG_DEBUG, TAG, "Creating JSExecutorFactory..");
       try {
+        // JNI needs to attach this thread because this function is being called from a different Thread
+        ThreadScope scope;
+
         std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
         std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
         auto jsExecutorFactory = makeJSExecutorFactory();
@@ -69,11 +80,16 @@ private:
                                                             jsQueue);
         auto runtimePointer = static_cast<jsi::Runtime *>(executor->getJavaScriptContext());
         __android_log_write(ANDROID_LOG_DEBUG, TAG, "JSExecutor created!");
+
+        // the returned value is now responsible for releasing the runtime.
+        auto _ = executor.release();
         return std::unique_ptr<jsi::Runtime>(runtimePointer);
+
       } catch (std::exception& exc) {
+        // Fatal error - the runtime can't be created at all.
         __android_log_write(ANDROID_LOG_ERROR, TAG, "Failed to create JSExecutor!");
         __android_log_write(ANDROID_LOG_ERROR, TAG, exc.what());
-        return std::unique_ptr<jsi::Runtime>(); // TODO: Remove this and let the caller handle the exception.
+        abort();
       }
     };
     mrousavy::multithreading::install(*runtime, makeJsExecutor, makeScheduler, makeErrorHandler);

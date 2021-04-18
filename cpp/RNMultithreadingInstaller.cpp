@@ -73,20 +73,12 @@ namespace mrousavy {
 
                                                                                                                                               pool->enqueue([resolver, rejecter, worklet]() {
                                                                                                                                                   try {
-                                                                                                                                                      auto m = manager.get();
-                                                                                                                                                      if (!m) throw std::runtime_error("RuntimeManager was not initialized!");
-                                                                                                                                                      auto r = m->runtime.get();
-                                                                                                                                                      if (!r) throw std::runtime_error("Runtime was not initialized!");
-                                                                                                                                                      auto& runtime = *r;
-                                                                                                                                                      throw std::runtime_error("1");
+                                                                                                                                                      auto& runtime = *manager->runtime;
 
                                                                                                                                                       auto function = worklet->getValue(runtime).asObject(runtime).asFunction(runtime);
-                                                                                                                                                      throw std::runtime_error("2");
                                                                                                                                                       auto result = function.getFunction(runtime).callWithThis(runtime, function);
-                                                                                                                                                      throw std::runtime_error("3");
 
                                                                                                                                                       auto shareableResult = reanimated::ShareableValue::adapt(runtime, result, manager.get());
-                                                                                                                                                      throw std::runtime_error("4");
                                                                                                                                                       resolver(shareableResult);
                                                                                                                                                   } catch (std::exception& exc) {
                                                                                                                                                       rejecter(exc.what());
