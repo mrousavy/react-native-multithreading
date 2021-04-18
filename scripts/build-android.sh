@@ -8,6 +8,8 @@ cd ..
 echo 'Building Android in:'
 echo $PWD
 
+rm -rf android-npm/
+
 cd android
 rm -rf build/
 
@@ -21,5 +23,6 @@ shopt -s dotglob nullglob
 mv -v build/outputs/aar/* ../android-npm
 
 cd $CWD
+cd ..
 cd scripts
 cp template.build.gradle ../android-npm/build.gradle
