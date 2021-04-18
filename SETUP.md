@@ -13,7 +13,11 @@ pod install
 
 Since pure JSI Modules cannot be autolinked yet, you have to manually initialize them.
 
-### Without react-native-mmkv (or other JSI libs)
+<details>
+  <summary>
+    <b>Without react-native-mmkv (or other JSI libs)</b>
+  </summary>
+<br />
 
 1. Open your app's `MainApplication.java`
 2. Add the following code:
@@ -66,7 +70,15 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
         };
   ```
 
-### With react-native-mmkv (or other JSI libs)
+</details>
+
+
+
+<details>
+  <summary>
+    <b>With react-native-mmkv (or other JSI libs)</b>
+  </summary>
+<br />
 
 1. Open your project in Android Studio
 2. Open the folder where `MainApplication.java` lives (`src/main/java/...`)
@@ -147,3 +159,5 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
   +       }
         };
   ```
+  
+  </details>
