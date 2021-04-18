@@ -67,24 +67,25 @@ private:
       return std::make_shared<reanimated::AndroidErrorHandler>(scheduler_);
     };
     auto makeJsExecutor = []() -> std::unique_ptr<jsi::Runtime> {
-      __android_log_write(ANDROID_LOG_DEBUG, TAG, "Creating JSExecutorFactory..");
+      __android_log_write(ANDROID_LOG_INFO, TAG, "Creating JSExecutorFactory..");
       try {
         // JNI needs to attach this thread because this function is being called from a different Thread
         ThreadScope scope;
 
         std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
         std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
+
         auto jsExecutorFactory = makeJSExecutorFactory();
-        __android_log_write(ANDROID_LOG_DEBUG, TAG, "Creating JSExecutor..");
+        __android_log_write(ANDROID_LOG_INFO, TAG, "Creating JSExecutor..");
         auto executor = jsExecutorFactory->createJSExecutor(delegate,
                                                             jsQueue);
-        auto runtimePointer = static_cast<jsi::Runtime *>(executor->getJavaScriptContext());
-        __android_log_write(ANDROID_LOG_DEBUG, TAG, "JSExecutor created!");
+        auto runtimePointer = static_cast<jsi::Runtime*>(executor->getJavaScriptContext());
+        __android_log_write(ANDROID_LOG_INFO, TAG, "JSExecutor created!");
 
-        // the returned value is now responsible for releasing the runtime.
+        // I need to release the local shared_ptr because otherwise the returned jsi::Runtime will be destroyed immediately.
         auto _ = executor.release();
-        return std::unique_ptr<jsi::Runtime>(runtimePointer);
 
+        return std::unique_ptr<jsi::Runtime>(runtimePointer);
       } catch (std::exception& exc) {
         // Fatal error - the runtime can't be created at all.
         __android_log_write(ANDROID_LOG_ERROR, TAG, "Failed to create JSExecutor!");
