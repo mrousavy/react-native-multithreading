@@ -13,7 +13,6 @@ add_library(
         ${PACKAGE_NAME}
         SHARED
         src/main/cpp/cpp-adapter.cpp
-        ../cpp/MakeJSIRuntime.cpp
         ../cpp/RNMultithreadingInstaller.cpp
         ../cpp/ThreadPool.cpp
 )
