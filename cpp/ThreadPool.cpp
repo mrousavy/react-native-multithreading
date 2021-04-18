@@ -7,9 +7,17 @@
 //
 
 #include "ThreadPool.h"
-#include "MakeJSIRuntime.h"
-#include <RNReanimated/RuntimeDecorator.h>
 #include <sstream>
+#include <vector>
+#include <queue>
+#include <memory>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <future>
+#include <functional>
+#include <stdexcept>
+#include <unordered_map>
 
 namespace mrousavy {
 namespace multithreading {
@@ -17,7 +25,7 @@ namespace multithreading {
 // the constructor just launches some amount of workers
 ThreadPool::ThreadPool(size_t threads): stop(false) {
   for (size_t i = 0; i < threads; ++i) {
-    workers.emplace_back([this, i] {
+    workers.emplace_back([this] {
       while (true) {
         std::function<void()> task;
         
