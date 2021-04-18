@@ -13,11 +13,11 @@ LOCAL_SRC_FILES := $(PROJECT_FILES)
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Common
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../../react-native-reanimated/Common/cpp/headers/NativeModules
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../../react-native-reanimated/Common/cpp/headers/Registries
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../../react-native-reanimated/Common/cpp/headers/SharedItems
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../../react-native-reanimated/Common/cpp/headers/SpecTools
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../../react-native-reanimated/Common/cpp/headers/Tools
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../node_modules/react-native-reanimated/Common/cpp/headers/NativeModules
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../node_modules/react-native-reanimated/Common/cpp/headers/Registries
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../node_modules/react-native-reanimated/Common/cpp/headers/SharedItems
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../node_modules/react-native-reanimated/Common/cpp/headers/SpecTools
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../node_modules/react-native-reanimated/Common/cpp/headers/Tools
 
 LOCAL_CFLAGS += -DONANDROID -fexceptions -frtti
 
