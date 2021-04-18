@@ -28,8 +28,8 @@
     "prepare": "bob build && scripts/build-android.sh",
     "release": "release-it",
     "bootstrap": "yarn && cd example && yarn && cd ios && pod install",
-    "prepublish": "rm -rf android-backup && mv android android-backup && mv android-npm android",
-    "postpublish": "mv android android-npm && mv android-backup android"
+    "prepack": "rm -rf android-backup && mv android android-backup && mv android-npm android",
+    "postpack": "mv android android-npm && mv android-backup android"
   },
   "keywords": [
     "react-native",

@@ -19,3 +19,7 @@ mkdir ../android-npm
 
 shopt -s dotglob nullglob
 mv -v build/outputs/aar/* ../android-npm
+
+cd $CWD
+cd scripts
+cp template.build.gradle ../android-npm
