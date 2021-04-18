@@ -25,9 +25,11 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build",
+    "prepare": "bob build && scripts/build-android.sh",
     "release": "release-it",
-    "bootstrap": "yarn && cd example && yarn && cd ios && pod install"
+    "bootstrap": "yarn && cd example && yarn && cd ios && pod install",
+    "prepublish": "rm -rf android-backup && mv android android-backup && mv android-npm android",
+    "postpublish": "mv android android-npm && mv android-backup android"
   },
   "keywords": [
     "react-native",
