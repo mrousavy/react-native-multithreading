@@ -28,6 +28,19 @@ npx pod-install
 
 > 🎉 [v1.0](https://github.com/mrousavy/react-native-multithreading/releases/tag/1.0.0) with Android support is here! 🎉
 
+### iOS
+
+Run:
+
+```sh
+cd ios
+pod install
+```
+
+### Android
+
+Since JSI is not officially released, an extra installation step will be required for Android. Follow the [SETUP.md](./SETUP.md) guide.
+
 ## Why
 
 Since [JSI](https://github.com/react-native-community/discussions-and-proposals/issues/91) is becoming more mainstream, there might be functions that are actually blocking and take a while to execute. For example, a storage library like [my react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) or an SQLite JSI library might take a few milliseconds to execute a complex call. You don't want your entire React-JS thread to freeze when doing that, since users will perceive a noticeable lag or freeze.
