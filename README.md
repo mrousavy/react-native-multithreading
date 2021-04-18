@@ -24,9 +24,9 @@ npm install react-native-multithreading
 npx pod-install
 ```
 
-> Requires a version of react-native-reanimated which includes [my PR](https://github.com/software-mansion/react-native-reanimated/pull/1861) ([**2.1.0**](https://github.com/software-mansion/react-native-reanimated/releases/tag/2.1.0) or above).
+> Requires react-native-reanimated [**2.1.0**](https://github.com/software-mansion/react-native-reanimated/releases/tag/2.1.0) or higher.
 
-> ⚠️ Warning: This is still just a proof of concept - do not use this library in production! ⚠️
+> 🎉 [v1.0](https://github.com/mrousavy/react-native-multithreading/releases/tag/v1.0.0) with Android support is here! 🎉
 
 ## Why
 
@@ -110,15 +110,14 @@ console.log(`Fibonacci Result: ${result}`)
 
 ## What's not possible?
 
-1. At the moment, only iOS is implemented. I'm trying to get Android working in [#3](https://github.com/mrousavy/react-native-multithreading/pull/3) - if anyone can help me with the CMake part I'd appreciate it.
-2. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
-3. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
+1. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
+2. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
 
 ## Supported JS engines
 
 * JavaScript Core (JSC)
 * [Hermes](http://hermesengine.dev)
-* [V8](http://github.com/Kudo/react-native-v8)
+* [V8](http://github.com/Kudo/react-native-v8) (iOS only)
 
 ## Performance
 
