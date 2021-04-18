@@ -26,7 +26,7 @@ npx pod-install
 
 > Requires react-native-reanimated [**2.1.0**](https://github.com/software-mansion/react-native-reanimated/releases/tag/2.1.0) or higher.
 
-> 🎉 [v1.0](https://github.com/mrousavy/react-native-multithreading/releases/tag/v1.0.0) with Android support is here! 🎉
+> 🎉 [v1.0](https://github.com/mrousavy/react-native-multithreading/releases/tag/1.0.0) with Android support is here! 🎉
 
 ## Why
 
