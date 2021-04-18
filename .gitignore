@@ -63,3 +63,5 @@ lib/
 .externalNativeBuild/
 native_prebuilt
 ndk-deps
+
+android-npm
