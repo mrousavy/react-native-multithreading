@@ -9,6 +9,7 @@
 
 #import <RNReanimated/REAIOSScheduler.h>
 #import <RNReanimated/REAIOSErrorHandler.h>
+#import "MakeJSIRuntime.h"
 
 using namespace facebook;
 
@@ -32,11 +33,21 @@ RCT_EXPORT_MODULE()
   }
   
   auto callInvoker = bridge.jsCallInvoker;
-  mrousavy::multithreading::install(*(jsi::Runtime *)cxxBridge.runtime, [callInvoker]() {
+  
+  auto makeRuntime = []() -> std::unique_ptr<jsi::Runtime> {
+    return mrousavy::multithreading::makeJSIRuntime();
+  };
+  auto makeScheduler = [callInvoker]() -> std::shared_ptr<reanimated::Scheduler> {
     return std::make_shared<reanimated::REAIOSScheduler>(callInvoker);
-  }, [](std::shared_ptr<reanimated::Scheduler> scheduler) {
+  };
+  auto makeErrorHandler = [](std::shared_ptr<reanimated::Scheduler> scheduler) -> std::shared_ptr<reanimated::ErrorHandler> {
     return std::make_shared<reanimated::REAIOSErrorHandler>(scheduler);
-  });
+  };
+  
+  mrousavy::multithreading::install(*(jsi::Runtime *)cxxBridge.runtime,
+                                    makeRuntime,
+                                    makeScheduler,
+                                    makeErrorHandler);
 }
 
 @end
