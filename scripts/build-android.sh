@@ -22,4 +22,4 @@ mv -v build/outputs/aar/* ../android-npm
 
 cd $CWD
 cd scripts
-cp template.build.gradle ../android-npm
+cp template.build.gradle ../android-npm/build.gradle
