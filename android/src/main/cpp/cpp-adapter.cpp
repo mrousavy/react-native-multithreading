@@ -70,7 +70,7 @@ private:
       __android_log_write(ANDROID_LOG_INFO, TAG, "Creating JSExecutorFactory..");
       try {
         // JNI needs to attach this thread because this function is being called from a different Thread
-        ThreadScope scope;
+        __unused ThreadScope scope; // RAII
 
         std::shared_ptr<react::ExecutorDelegate> delegate = std::shared_ptr<react::ExecutorDelegate>();
         std::shared_ptr<react::MessageQueueThread> jsQueue = std::shared_ptr<react::MessageQueueThread>();
