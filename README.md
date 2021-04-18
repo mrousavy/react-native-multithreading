@@ -103,8 +103,8 @@ console.log(`Fibonacci Result: ${result}`)
 * You can run any JavaScript code you want in there.
 * You can use variables from "outside" (e.g. state), but those will be immutable/frozen.
 * You can use functions from "outside".
-   - Worklets (functions with the `'worklet'` directive) can be called synchronously
-   - Normal JS functions (e.g. setState) can be called with `runOnJS`
+   - Worklets (functions with the `'worklet'` directive) can be called directly on the separate thread
+   - Normal JS functions (e.g. setState) can be called on the React-JS thread with `runOnJS`
    - Native JSI functions ("host functions") can be called synchronously (e.g. functions from [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv#usage))
 * You can assign Reanimated Shared Values.
 
@@ -114,9 +114,17 @@ console.log(`Fibonacci Result: ${result}`)
 2. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
 3. All functions you are calling inside a custom thread, must be workletized to truly run on a separate thread. So add the `'worklet'` directive at the top of every function you're calling in that thread (including the thread callback itself), and don't forget to install the Reanimated babel plugin.
 
-## License
+## Supported JS engines
 
-MIT
+* JavaScript Core (JSC)
+* [Hermes](http://hermesengine.dev)
+* [V8](http://github.com/Kudo/react-native-v8)
+
+## Performance
+
+Since the worklets are completely dispatched in an isolated thread, nothing interrupts their execution. This means, the JS engine can optimize the functions really well, making execution fast.
+
+Be aware that there always will be a small overhead when calling `spawnThread`, because all variables from outside have to be copied into the new thread first. For example, if you use the separate thread to do complex array operations, be aware that the array has to be copied into the separate thread first. Always benchmark the performance differences!
 
 ## Credits
 
