@@ -106,8 +106,8 @@ console.log(`Fibonacci Result: ${result}`)
 * You can use variables from "outside" (e.g. state), but those will be immutable/frozen.
 * You can use functions from "outside".
    - Worklets (functions with the `'worklet'` directive) can be called directly on the separate thread
-   - Normal JS functions (e.g. setState) can be called on the React-JS thread with `runOnJS`
    - Native JSI functions ("host functions", aka functions that print `function f() { [native code] }` when you call `.toString()` on them) can be called synchronously (e.g. functions from [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv#usage))
+   - Normal JS functions (e.g. setState) can be called on the React-JS thread with [`runOnJS`](https://docs.swmansion.com/react-native-reanimated/docs/api/runOnJS)
 * You can assign Reanimated Shared Values.
 
 ## What's not possible?
