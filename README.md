@@ -110,6 +110,8 @@ console.log(`Fibonacci Result: ${result}`)
    - Normal JS functions (e.g. setState) can be called on the React-JS thread with [`runOnJS`](https://docs.swmansion.com/react-native-reanimated/docs/api/runOnJS)
 * You can assign Reanimated Shared Values.
 
+> Note that react-native-multithreading is more of a proof of concept than a production ready library. Everything works as I listed it here, but in real world app you most likely won't be needing a JS multithreading library.
+
 ## What's not possible?
 
 1. Since the library uses JSI for synchronous native methods access, remote debugging (e.g. with Chrome) is no longer possible. Instead, you should use [Flipper](https://fbflipper.com).
