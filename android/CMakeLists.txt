@@ -63,21 +63,23 @@ find_library(
         NO_CMAKE_FIND_ROOT_PATH
 )
 find_library(
-        JSEXECUTOR_LIB
-        jscexecutor
-        PATHS ${LIBRN_DIR}
-        NO_CMAKE_FIND_ROOT_PATH
-)
-find_library(
-        JSC_LIB
-        jsc
-        PATHS ${LIBJSC_DIR}
-        NO_CMAKE_FIND_ROOT_PATH
-)
-find_library(
         REANIMATED_LIB
         reanimated
         PATHS ${LIBREANIMATED_DIR}
+        NO_CMAKE_FIND_ROOT_PATH
+)
+
+find_library(
+        REACT_NATIVE_JNI_LIB
+        reactnativejni
+        PATHS ${LIBRN_DIR}
+        NO_CMAKE_FIND_ROOT_PATH
+)
+
+find_library(
+        REACT_NATIVE_UTILS_LIB
+        reactnativeutilsjni
+        PATHS ${LIBRN_DIR}
         NO_CMAKE_FIND_ROOT_PATH
 )
 
@@ -95,8 +97,8 @@ target_link_libraries(
         ${PACKAGE_NAME}
         ${LOG_LIB}
         ${REANIMATED_LIB}
-        ${JSC_LIB}
-        ${JSEXECUTOR_LIB}
+        ${REACT_NATIVE_JNI_LIB}
+        ${REACT_NATIVE_UTILS_LIB}
         ${FBJNI_LIB}
         android
 )
