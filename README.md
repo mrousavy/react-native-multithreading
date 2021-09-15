@@ -1,7 +1,11 @@
 <div align="center">
   <img src="img/icon.png" width="30%">
   <h1>react-native-multithreading</h2>
-  <h3>🧵 Fast and easy multithreading for React Native using JSI.</h3>
+  <h3>🧵 Fast and easy multithreading for React Native using JSI. 🧵</h3>
+  <h5>
+    ⚠️ Note: This is a proof of concept. <br/>
+    Do not use this library in production.
+  </h5>
   <br/>
   <a align="center" href='https://ko-fi.com/F1F8CLXG' target='_blank'>
     <img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
