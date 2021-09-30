@@ -5,8 +5,8 @@
 
 #if __has_include(<RNReanimated/Scheduler.h>)
 #include <RNReanimated/Scheduler.h>
-#include <RNReanimated/ShareableValue.h>
 #include <RNReanimated/RuntimeManager.h>
+#include <RNReanimated/ShareableValue.h>
 #include <RNReanimated/RuntimeDecorator.h>
 #include <RNReanimated/ErrorHandler.h>
 #else
