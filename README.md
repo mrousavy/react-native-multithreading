@@ -132,7 +132,7 @@ console.log(`Fibonacci Result: ${result}`)
 
 ## Performance
 
-Since the worklets are completely dispatched in an isolated thread, nothing interrupts their execution. This means, the JS engine can optimize the functions really well, making execution fast.
+Since the worklets are completely dispatched in an isolated thread, nothing interrupts their execution.
 
 Be aware that there always will be a small overhead when calling `spawnThread`, because all variables from outside have to be copied into the new thread first. For example, if you use the separate thread to do complex array operations, be aware that the array has to be copied into the separate thread first. Always benchmark the performance differences!
 
