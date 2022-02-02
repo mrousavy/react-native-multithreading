@@ -2,10 +2,13 @@
   <img src="img/icon.png" width="30%">
   <h1>react-native-multithreading</h2>
   <h3>🧵 Fast and easy multithreading for React Native using JSI. 🧵</h3>
-  <h5>
+  <h4>
     ⚠️ Note: This is a proof of concept. <br/>
-    Do not use this library in production.
-  </h5>
+    Do not use this library in production. <br/><br/>
+    <a href="https://github.com/mrousavy/react-native-vision-camera">VisionCamera</a> goes beyond this concept and <br/>
+    use a separate JS runtime to provide an API for processing <br/>
+    camera frames in realtime. Check out <a href="https://mrousavy.com/react-native-vision-camera/docs/guides/frame-processors">Frame Processors</a>!
+  </h4>
   <br/>
   <a align="center" href='https://ko-fi.com/F1F8CLXG' target='_blank'>
     <img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
