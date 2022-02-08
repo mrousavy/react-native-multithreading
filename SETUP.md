@@ -21,6 +21,7 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
 
 1. Open your app's `MainApplication.java`
 2. Add the following code:
+
   ```diff
   package com.example.reactnativemultithreading;
 
@@ -72,8 +73,6 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
 
 </details>
 
-
-
 <details>
   <summary>
     <b>With react-native-mmkv (or other JSI libs)</b>
@@ -92,13 +91,14 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
   import com.facebook.react.bridge.JSIModuleSpec;
   import com.facebook.react.bridge.JavaScriptContextHolder;
   import com.facebook.react.bridge.ReactApplicationContext;
+  
   import com.swmansion.reanimated.ReanimatedJSIModulePackage;
-  import com.reactnativemmkv.MultithreadingModule;
+  import com.reactnativemultithreading.MultithreadingModule;
 
   import java.util.Collections;
   import java.util.List;
 
-  // TODO: Remove all of this when JSI Modules can be autoinstalled (maybe RN 0.65)
+  // TODO: Remove all of this when JSI Modules can be auto-installed
   public class ExampleJSIPackage extends ReanimatedJSIModulePackage {
       @Override
       public List<JSIModuleSpec> getJSIModules(ReactApplicationContext reactApplicationContext, JavaScriptContextHolder jsContext) {
@@ -108,9 +108,11 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
       }
   }
   ```
+
 6. Replace `com.example` (first line) with the correct package name
 7. Replace `ExampleJSIPackage` with the file name you chose in step 4.
 8. Open `MainApplication.java` and find the location where the `ReactNativeHost` is initialized. You have to override it's `getJSIModulePackage` method:
+
   ```diff
   package com.example.reactnativemultithreading;
 
