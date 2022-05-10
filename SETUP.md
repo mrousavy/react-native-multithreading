@@ -22,7 +22,7 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
 1. Open your app's `MainApplication.java`
 2. Add the following code:
   ```diff
-  package com.example.reactnativemultithreading;
+  +package com.example.reactnativemultithreading;
 
   import android.app.Application;
   import android.content.Context;
@@ -53,7 +53,7 @@ Since pure JSI Modules cannot be autolinked yet, you have to manually initialize
             List<ReactPackage> packages = new PackageList(this).getPackages();
             // Packages that cannot be autolinked yet can be added manually here, for MultithreadingExample:
             // packages.add(new MyReactNativePackage());
-            packages.add(new MultithreadingPackage());
+  +         packages.add(new MultithreadingPackage());
             return packages;
           }
 
