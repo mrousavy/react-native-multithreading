@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('rnmultithreading-debug.aar')) // TODO: Use release variant here?
