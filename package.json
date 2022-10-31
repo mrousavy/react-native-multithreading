@@ -18,13 +18,7 @@
     "!**/__mocks__"
   ],
   "scripts": {
-    "bootstrap": "yarn && cd example && yarn && cd ios && pod install",
-    "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build && scripts/build-android.sh",
-    "prepack": "rm -rf android-backup && mv android android-backup && mv android-npm android",
-    "postpack": "mv android android-npm && mv android-backup android",
-    "release": "release-it"
+    "typescript": "tsc --noEmit"
   },
   "keywords": [
     "react-native",
