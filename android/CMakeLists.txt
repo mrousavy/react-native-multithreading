@@ -37,7 +37,7 @@ target_include_directories(
         ${PACKAGE_NAME}
         PRIVATE
         ${LIBFBJNI_INCLUDE_DIR}
-        "${BUILD_DIR}/third-party-ndk/boost_${BOOST_VERSION}"
+        "${BUILD_DIR}/third-party-ndk/boost/boost_${BOOST_VERSION}"
         "${BUILD_DIR}/third-party-ndk/double-conversion"
         "${BUILD_DIR}/third-party-ndk/folly"
         "${BUILD_DIR}/third-party-ndk/glog/exported"
