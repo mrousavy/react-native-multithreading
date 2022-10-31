@@ -1,7 +1,32 @@
-import 'react-native-reanimated';
+import { NativeModules } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 const g = global as any;
+
+export const install = () => {
+  if (g.spawnThread) return true;
+  const installed = NativeModules.RNMultithreading.install();
+  if (installed && g.spawnThread) {
+    const capturableConsole = console;
+    try {
+      g.spawnThread(() => {
+        'worklet';
+        const console = {
+          debug: runOnJS(capturableConsole.debug),
+          log: runOnJS(capturableConsole.log),
+          warn: runOnJS(capturableConsole.warn),
+          error: runOnJS(capturableConsole.error),
+          info: runOnJS(capturableConsole.info),
+        };
+        _setGlobalConsole(console);
+      });
+    } catch (e) {
+      //@ts-ignore
+      console.error('react-native-multithreading:', e.stack);
+    }
+  }
+  return installed;
+};
 
 /**
  * Runs the given function in a custom thread, in a custom parallel runtime.
@@ -16,18 +41,17 @@ const g = global as any;
  * })
  * ```
  */
-export const spawnThread = g.spawnThread as <T>(run: () => T) => Promise<T>;
 
-// TODO: Find a way to automatically bind console once I can spawn multiple threads. Possibly through a member function: Thread.polyfillConsole()
-const capturableConsole = console;
-spawnThread(() => {
-  'worklet';
-  const console = {
-    debug: runOnJS(capturableConsole.debug),
-    log: runOnJS(capturableConsole.log),
-    warn: runOnJS(capturableConsole.warn),
-    error: runOnJS(capturableConsole.error),
-    info: runOnJS(capturableConsole.info),
-  };
-  _setGlobalConsole(console);
-});
+
+
+export const {
+  spawnThread,
+  doWork,
+  loadModuleFromAssets,
+  loadPlugin,
+}: {
+  spawnThread: <T>(run: () => T) => Promise<T>;
+  doWork: <T>(code: string) => Promise<T>;
+  loadModuleFromAssets: (file: string, moduleName: string) => Promise<boolean>;
+  loadPlugin: (pluginName: string) => Promise<boolean>;
+} = g;

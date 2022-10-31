@@ -14,8 +14,10 @@
 
 #ifdef ON_ANDROID
 #include "android/asset_manager_jni.h"
-#include "MultithreadingScheduler.h"
 #endif
+
+#include "MultithreadingScheduler.h"
+
 using namespace facebook;
 
 namespace mrousavy {

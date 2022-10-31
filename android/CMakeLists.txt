@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.9.0)
 
-set (CMAKE_VERBOSE_MAKEFILE ON)
-set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_CXX_FLAGS "-DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_HAVE_MEMRCHR=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_MOBILE=1 -DON_ANDROID")
 
 set (PACKAGE_NAME "rnmultithreading")
@@ -13,6 +11,7 @@ add_library(
         ${PACKAGE_NAME}
         SHARED
         src/main/cpp/cpp-adapter.cpp
+        ../cpp/MultithreadingScheduler.cpp
         ../cpp/RNMultithreadingInstaller.cpp
         ../cpp/ThreadPool.cpp
 )
@@ -36,7 +35,8 @@ target_include_directories(
         "${NODE_MODULES_DIR}/react-native/ReactCommon"
         "${NODE_MODULES_DIR}/react-native/ReactCommon/callinvoker"
         "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi"
-        "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/AnimatedSensor"
+        "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/LayoutAnimations"
         "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/Tools"
         "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/SpecTools"
         "${NODE_MODULES_DIR}/react-native-reanimated/Common/cpp/headers/SharedItems"
@@ -93,6 +93,20 @@ find_library(
 
 # build shared lib
 
+set_target_properties(
+        ${PACKAGE_NAME} PROPERTIES
+        CXX_STANDARD 17
+        CXX_EXTENSIONS OFF
+        POSITION_INDEPENDENT_CODE ON
+)
+
+find_library(
+        JSI_LIB
+        jsi
+        PATHS ${LIBRN_DIR}
+        NO_CMAKE_FIND_ROOT_PATH
+  )
+
 target_link_libraries(
         ${PACKAGE_NAME}
         ${LOG_LIB}
@@ -100,5 +114,6 @@ target_link_libraries(
         ${REACT_NATIVE_JNI_LIB}
         ${REACT_NATIVE_UTILS_LIB}
         ${FBJNI_LIB}
+        ${JSI_LIB}
         android
 )
