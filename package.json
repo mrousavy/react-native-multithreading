@@ -2,11 +2,7 @@
   "name": "react-native-multithreading",
   "version": "1.1.1",
   "description": "🧵 Fast and easy multithreading for React Native using JSI",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
-  "react-native": "src/index",
-  "source": "src/index",
+  "main": "src/index.ts",
   "files": [
     "src",
     "lib",
@@ -22,13 +18,7 @@
     "!**/__mocks__"
   ],
   "scripts": {
-    "bootstrap": "yarn && cd example && yarn && cd ios && pod install",
-    "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build && scripts/build-android.sh",
-    "prepack": "rm -rf android-backup && mv android android-backup && mv android-npm android",
-    "postpack": "mv android android-npm && mv android-backup android",
-    "release": "release-it"
+    "typescript": "tsc --noEmit"
   },
   "keywords": [
     "react-native",
@@ -51,8 +41,8 @@
     "@react-native-community/eslint-config": "^2.0.0",
     "@release-it/conventional-changelog": "^2.0.0",
     "@types/jest": "^26.0.0",
-    "@types/react": "^16.9.19",
-    "@types/react-native": "^0.64.2",
+    "@types/react": "^17.0.39",
+    "@types/react-native": "^0.67.7",
     "commitlint": "^11.0.0",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^7.0.0",
@@ -61,17 +51,17 @@
     "jest": "^26.0.1",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
-    "react": "17.0.1",
-    "react-native": "0.64.0",
+    "react": "17.0.2",
+    "react-native": "0.70.3",
     "react-native-builder-bob": "^0.17.1",
-    "react-native-reanimated": "^2.1.0",
+    "react-native-reanimated": "^2.12.0",
     "release-it": "^14.2.2",
-    "typescript": "^4.1.3"
+    "typescript": "^4.6.2"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated": ">= 2.1.0"
+    "react-native-reanimated": "2.12.0"
   },
   "jest": {
     "preset": "react-native",

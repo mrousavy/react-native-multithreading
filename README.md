@@ -31,9 +31,7 @@ npm install react-native-multithreading
 npx pod-install
 ```
 
-Since JSI is not officially released, installing **react-native-multithreading** requires you to edit a few native files. See [the setup guide (**SETUP.md**)](./SETUP.md) for more details.
-
-> Requires react-native-reanimated [**2.1.0**](https://github.com/software-mansion/react-native-reanimated/releases/tag/2.1.0) or higher.
+> Requires react-native-reanimated [**2.12.0**](https://github.com/software-mansion/react-native-reanimated/releases/tag/2.1.0) or higher.
 
 > 🎉 [v1.0](https://github.com/mrousavy/react-native-multithreading/releases/tag/1.0.0) with Android support is here! 🎉
 

@@ -8,12 +8,12 @@ import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 import java.util.List;
 
 public class MultithreadingJSIModulePackage extends ReanimatedJSIModulePackage {
-    @Override
-    public List<JSIModuleSpec> getJSIModules(ReactApplicationContext reactApplicationContext, JavaScriptContextHolder jsContext) {
-        try {
-            return super.getJSIModules(reactApplicationContext, jsContext);
-        } finally {
-            MultithreadingModule.install(reactApplicationContext, jsContext);
-        }
-    }
+    // @Override
+    // public List<JSIModuleSpec> getJSIModules(ReactApplicationContext reactApplicationContext, JavaScriptContextHolder jsContext) {
+    //     // try {
+    //     //     return super.getJSIModules(reactApplicationContext, jsContext);
+    //     // } finally {
+    //     //     MultithreadingModule.install(reactApplicationContext, jsContext);
+    //     // }
+    // }
 }
